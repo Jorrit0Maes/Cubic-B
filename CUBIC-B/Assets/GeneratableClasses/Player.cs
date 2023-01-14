@@ -11,7 +11,13 @@ public class Player : InteractableObject
     public int Speed { get; set; }
     public float Jump { get; set; }
 
-    private GameObject PlayerObject;
+    private GameObject PlayerObject = new GameObject();
+
+    public Player()
+    {
+        PlayerObject.AddComponent<SpriteRenderer>();
+
+    }
 
     public Player(Vector2 startPoint, Vector2 endPoint, int Health, int Speed, float Jump )
     {

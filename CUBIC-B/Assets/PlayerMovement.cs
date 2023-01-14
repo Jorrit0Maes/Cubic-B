@@ -7,8 +7,8 @@ using System.Timers;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float Speed { get; set; }
-    public float Jump { get; set; }
+    public float Speed;
+    public float Jump;
     private float Move;
     protected Rigidbody2D rb;
     public bool IsOnFloor = true;
@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Move < 0 && FacingRight)
         {
+            
             Flip();
         }
         else if (Move > 0 && !FacingRight)
@@ -40,20 +41,22 @@ public class PlayerMovement : MonoBehaviour
             Flip();
         }
 
-        animator.SetFloat("PlayerSpeed", Mathf.Abs(Move));
+        animator.SetBool("InMotion", (Mathf.Abs(Move) > 0));
         jumpFunction();
+
+        animator.SetFloat("verticalSpeed", rb.velocity.y);
+
     }
 
-    
+
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
             IsOnFloor  = true;
-            animator.SetBool("isOnGround", IsOnFloor);
+            animator.SetBool("onGround", IsOnFloor);
             if (IsJumping)
             {
-                animator.SetBool("isJumping", false);
                 IsJumping = false;
             }
             jumpcount = 1;
@@ -66,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             IsOnFloor = false;
-            animator.SetBool("isOnGround", IsOnFloor);
+            animator.SetBool("onGround", IsOnFloor);
         }
 
     }
@@ -77,7 +80,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && IsOnFloor)
             {
-                animator.SetBool("isJumping", true);
                 rb.AddForce(new Vector2(rb.velocity.x, Jump));
                 IsJumping = true;
 
@@ -87,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && (!IsJumping || jumpcount == 2))
             {
+
                 if (!IsJumping)
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
@@ -111,7 +114,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-
     }
 
     public void TriggerSlowMotion()
