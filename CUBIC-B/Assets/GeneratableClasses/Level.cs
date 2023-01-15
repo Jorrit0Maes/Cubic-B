@@ -21,6 +21,7 @@ public class Level : MonoBehaviour
     public int maxPlatformXSpacing = 100;
     public int minPlatformXspacing;
     public Transform squareExmp;
+    private ArrayList platforms;
 
     private void Awake()
     {
@@ -43,7 +44,7 @@ public class Level : MonoBehaviour
 
     private void generateLevelPlatforms()
     {
-        ArrayList platforms = new ArrayList ();
+        platforms = new ArrayList ();
         float lengthleft = maxLevelLength;
 
         Vector2 lastPoint = new Vector2(2f,0f);
@@ -62,24 +63,37 @@ public class Level : MonoBehaviour
 
             //rand doet allleen ints dus we delen door 100 om een getal tot 2 na de komme te krijgen dunno Y ma werkt niet als ik dat in de toewijzing doe beste gok is Int reasons
             float xSpacing = random.Next(minPlatformXspacing,maxPlatformXSpacing);
-            xSpacing = (xSpacing/100)*4 ;
 
             float ySpacing = random.Next(minPlatformYSpacing, maxPlatformYSpacing);
-            ySpacing = (ySpacing/100)*4; 
 
-            Platform tempPlatform = new Platform(new Vector2(lastPoint.x+xSpacing, lastPoint.y + ySpacing), new Vector2(lastPoint.x +xSpacing+(length*4), lastPoint.y + ySpacing));
+            // if ySpacing is large xSpacing gets smaller so we can make the jump
+            xSpacing -= ySpacing;
+
+            xSpacing = (xSpacing / 100) * 4;
+            ySpacing = (ySpacing / 100) * 4;
+
+            //make it rand up or down
+            if (random.Next(100) > 66)
+            {
+                ySpacing = -ySpacing;
+            }
+
+            Platform tempPlatform = new Platform(new Vector2(lastPoint.x+xSpacing, lastPoint.y + ySpacing), new Vector2(lastPoint.x +xSpacing+(length*4), lastPoint.y + ySpacing  - 3f));
             
            //TODO: vertical
             lengthleft -= length;
             lastPoint.x = tempPlatform.endPoint.x;
+            lastPoint.y = tempPlatform.startPoint.y;  
 
 
             var tempInitiated = Instantiate(squareExmp, tempPlatform.origin , Quaternion.identity);
             tempInitiated.localScale = new Vector3(length, 0.75f, 1);
 
-
+            platforms.Add(tempPlatform);
         }
 
        
     }
+
+
 }
