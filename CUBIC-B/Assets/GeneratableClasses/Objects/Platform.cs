@@ -8,7 +8,10 @@ public class Platform: InteractableObject
     {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        //TODO : create th esprite with the correct png
 
+        this.origin = new Vector2(startPoint.x + (endPoint.x - startPoint.x) /2, startPoint.y + (endPoint.y - startPoint.y) / 2);
     }
+
+
+    
 }
