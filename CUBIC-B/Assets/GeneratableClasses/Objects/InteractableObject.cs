@@ -4,9 +4,8 @@ using UnityEngine;
 
 public abstract  class InteractableObject 
 {
-
-    protected Sprite sprite;
-    protected Vector2 startPoint;
-    protected Vector2 endPoint;
-    protected Collider collider;
+    public Transform myObject;
+    public Vector2 startPoint;
+    public Vector2 endPoint;
+    public Vector2 origin;
 }
