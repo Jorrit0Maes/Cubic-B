@@ -111,7 +111,7 @@ public class Level : MonoBehaviour
             {
                 // we ensure not to fill the platform with so much boxes that it is all box  => platformLength/2 = number of boxes *sizeof of a box only half of the length filled
 
-                int maxNumberOfboxes = (int)Math.Floor(platformlength / 2 / sizeOfBox);
+                int maxNumberOfboxes = (int)Math.Floor(platformlength / 2 * sizeOfBox);//size of box is kleiner dan nul dus verlagen door vermenigvuldiging
 
                 random.Next(maxNumberOfboxes);
 
@@ -133,9 +133,7 @@ public class Level : MonoBehaviour
 
                 }
 
-
             }
-          
             
         }
     }
@@ -147,7 +145,7 @@ public class Level : MonoBehaviour
        foreach(Box box in boxes)
        {
             //check of het startpunt van de box tussen het einde of begin van de al bestaande boxen valt of korter voor het begin dan de box die bijkomt lang is
-            if(box.startPoint.x< boxTemplate.startPoint.x - boxTemplate.length && boxTemplate.startPoint.x < box.endPoint.x)
+            if(box.startPoint.x < boxTemplate.startPoint.x - boxTemplate.length && boxTemplate.endPoint.x < box.endPoint.x)
             {
                 return true;
             }
