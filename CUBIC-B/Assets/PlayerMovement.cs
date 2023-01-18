@@ -61,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
             }
             jumpcount = 1;
         }
-
     }
 
     protected void OnCollisionExit2D(Collision2D other)

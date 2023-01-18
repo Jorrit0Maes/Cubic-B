@@ -13,4 +13,7 @@ public class Pike : DeadlyObject
 		 * this.collider =
 		 * */
     }
+
+    public override Vector2 endPoint { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public override Vector2 origin { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 }
