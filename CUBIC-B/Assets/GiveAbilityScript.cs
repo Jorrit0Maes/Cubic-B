@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GiveAbilityScript : MonoBehaviour
@@ -17,11 +18,15 @@ public class GiveAbilityScript : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-           ability.Activate(collision.gameObject);
+            //eerst de active abilities uit zetten
+            collision.gameObject.GetComponent<PlayerMovement>().Invoke("cancelAllAbilities",0);
+            ability.Activate(collision.gameObject);
+            gameObject.SetActive(false);
+
         }
     }
 }

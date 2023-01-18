@@ -17,7 +17,13 @@ public class PlayerMovement : MonoBehaviour
     private bool IsJumping = false;
     public bool DoubleJumpIsActive = false;
     public int jumpcount = 1;
+    public float backUpSpeed;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        backUpSpeed =  Speed;
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -120,13 +126,20 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = 0.7f;
         Timer Timer = new();
         Timer.Elapsed += ResetTimescale;
-        Timer.Interval = 7500;
+        Timer.Interval = 3000;
         Timer.Start();
     }
 
     public void ResetTimescale(object source, ElapsedEventArgs e)
     {
         Time.timeScale = 1f;
+    }
+
+    private void cancelAllAbilities()
+    {
+        this.Speed = backUpSpeed;
+        Time.timeScale = 1f;
+        DoubleJumpIsActive = false;
     }
 
 }

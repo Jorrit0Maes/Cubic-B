@@ -6,7 +6,7 @@ using UnityEngine;
 public class SpeedBoost : Ability
 {
 	private GameObject PlayerObject;
-	public float IncreasedSpeed = 15;
+	public float IncreasedSpeed = 25;
 	private float NormalSpeed;
 
 	public void Activate(GameObject Player)
@@ -16,11 +16,10 @@ public class SpeedBoost : Ability
 		PlayerObject.TryGetComponent(out PlayerMovement PlayermovemtScript);
 		NormalSpeed = PlayermovemtScript.Speed;
         PlayermovemtScript.Speed = IncreasedSpeed;
-
 		// set a timer and task to take away the increased movementspeed of th eplayer
         Timer Timer = new Timer();
 		Timer.Elapsed += Task;
-		Timer.Interval = 7500;
+		Timer.Interval = 30000;
 		Timer.Start();
 
 
