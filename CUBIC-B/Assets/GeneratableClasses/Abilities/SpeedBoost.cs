@@ -13,15 +13,8 @@ public class SpeedBoost : Ability
 	{
 		PlayerObject = Player;
 		//get and increase movement speed of the player
-		PlayerObject.TryGetComponent(out PlayerMovement PlayermovemtScript);
-		NormalSpeed = PlayermovemtScript.Speed;
-        PlayermovemtScript.Speed = IncreasedSpeed;
-		// set a timer and task to take away the increased movementspeed of th eplayer
-        Timer Timer = new Timer();
-		Timer.Elapsed += Task;
-		Timer.Interval = 30000;
-		Timer.Start();
-
+		PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
+		playerMovement.Invoke("triggerIncreasedSpeed", 0);
 
         
 	}
@@ -29,8 +22,7 @@ public class SpeedBoost : Ability
 
 	public void Task(object source ,ElapsedEventArgs e)
 	{
-        if (PlayerObject.TryGetComponent(out PlayerMovement PlayersMovementScript)){
-            PlayersMovementScript.Speed = NormalSpeed;
-        }
+		PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
+        playerMovement.Invoke("resetSpeed", 0);
     }
 }

@@ -1,32 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using System.Timers;
-
+using UnityEngine.WSA;
+using System.Threading;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float Speed;
     public float Jump;
-    private float Move;
-    protected Rigidbody2D rb;
-    public bool IsOnFloor = true;
-    public Animator animator;
-    private bool FacingRight = true;
-    private bool IsJumping = false;
-    public bool DoubleJumpIsActive = false;
-    public int jumpcount = 1;
-    public float backUpSpeed;
+    private float Move { get; set; }
+    protected Rigidbody2D rb { get; set; }
+    public bool IsOnFloor { get; set; }
+    public Animator animator { get; set; }
+    private bool FacingRight { get; set; }
+    private bool IsJumping { get; set; }
+    public bool DoubleJumpIsActive;
+    public int jumpcount { get; set; }
+    private float backUpSpeed { get; set; }
+    private bool doResetTime = false;
     // Start is called before the first frame update
 
     private void Awake()
     {
+        animator= gameObject.GetComponent<Animator>(); 
         backUpSpeed =  Speed;
+        rb = GetComponent<Rigidbody2D>();
+        DoubleJumpIsActive = true;
+        IsJumping = false;
+        FacingRight = true;
+        IsOnFloor = true;
+        jumpcount = 1;
+
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
 
     }
 
@@ -52,6 +60,10 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("verticalSpeed", rb.velocity.y);
 
+        if (doResetTime)
+        {
+            ResetTimescale();
+        }
     }
 
 
@@ -124,20 +136,55 @@ public class PlayerMovement : MonoBehaviour
     public void TriggerSlowMotion()
     {
         Time.timeScale = 0.7f;
-        Timer Timer = new();
-        Timer.Elapsed += ResetTimescale;
-        Timer.Interval = 3000;
-        Timer.Start();
+        System.Timers.Timer timer = new();
+        timer.Elapsed += setToResetTime;
+        timer.Interval = 3000;
+        timer.Start();
     }
 
-    public void ResetTimescale(object source, ElapsedEventArgs e)
+    public void setToResetTime(object source, ElapsedEventArgs e)
     {
-        Time.timeScale = 1f;
+        doResetTime= true;
     }
+
+    public void ResetTimescale()
+    {
+        Time.timeScale = 1;
+        doResetTime= false;
+    }
+
+    public void triggerIncreasedSpeed()
+    {
+        Speed = 25;
+        System.Timers.Timer timer = new();
+        timer.Interval = 3000;
+        timer.Elapsed += resetSpeed;
+        timer.AutoReset = false;
+        timer.Start();
+    }
+    public void resetSpeed(object source, ElapsedEventArgs e)
+    {
+        Speed= backUpSpeed;
+    }
+
+    public void triggerDoubleJump()
+    {
+        DoubleJumpIsActive = true;
+        System.Timers.Timer timer = new();
+        timer.Interval = 3000;
+        timer.Elapsed += resetDoubleJump;
+        timer.AutoReset = false;
+        timer.Start();
+    }
+    public void resetDoubleJump(object source, ElapsedEventArgs e)
+    {
+        DoubleJumpIsActive = false;
+    }
+
 
     private void cancelAllAbilities()
     {
-        this.Speed = backUpSpeed;
+        Speed = backUpSpeed;
         Time.timeScale = 1f;
         DoubleJumpIsActive = false;
     }

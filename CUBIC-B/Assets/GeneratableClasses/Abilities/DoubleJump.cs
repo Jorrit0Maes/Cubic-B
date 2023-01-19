@@ -11,20 +11,16 @@ public class DoubleJump : Ability
     public void Activate(GameObject Player)
     {
         Player.TryGetComponent(out PlayerMovement playerMovement);
-        playerMovement.DoubleJumpIsActive = true;
-        Timer Timer = new Timer();
-        Timer.Elapsed += Task;
-        Timer.Interval = 30000;
-        Timer.Start();
+        playerMovement.Invoke("triggerDoubleJump", 0);
+        
 
     }
 
     public void Task(object source, ElapsedEventArgs e)
     {
-        if (PlayerObject.TryGetComponent(out PlayerMovement playerMovement))
-        {
-            playerMovement.DoubleJumpIsActive = false;
-        }
+        PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
+        playerMovement.Invoke("resetDoubleJump", 0);
+
     }
 
 }
