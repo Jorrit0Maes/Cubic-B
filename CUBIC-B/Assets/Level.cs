@@ -22,7 +22,7 @@ public class Level : MonoBehaviour
     public int minPlatformXspacing;
     public Transform squareExmp;
     public Transform roundExmp;
-    private ArrayList platforms;
+    private List<Platform> platforms;
     ArrayList interactableObjects = new ArrayList();
     public float sizeOfBox;
     public float sizeOfAbilityObject;
@@ -65,10 +65,10 @@ public class Level : MonoBehaviour
 
     private void generateLevelPlatforms()
     {
-        platforms = new ArrayList ();
+        platforms = new();
         float lengthleft = maxLevelLength;
 
-        Vector2 lastPoint = new Vector2(2f,0f);
+        Vector2 lastPoint = new(2f,0f);
 
 
         var random = new System.Random();
@@ -122,7 +122,27 @@ public class Level : MonoBehaviour
             lastPoint.y = tempPlatform.startPoint.y;
         }
 
-       
+
+        Platform lastPlatform = platforms[platforms.Count - 1];
+
+        DeathBox lastdeathBox = new();
+        lastdeathBox.startPoint = new(lastPoint.x - 2, lastPoint.y -3) ;
+        lastdeathBox.endPoint = new(lastPoint.x + 10,lastPoint.y - 4);
+        var tempLastDeathbox = Instantiate(deathBoxPreFab, lastdeathBox.origin, Quaternion.identity);
+        lastdeathBox.length = lastdeathBox.endPoint.x - lastdeathBox.startPoint.x;
+        tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
+        tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
+        tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
+
+        var tempFinish = Instantiate(squareExmp, new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f),Quaternion.identity);
+        tempFinish.gameObject.GetComponent<SpriteRenderer>().color = Color.magenta ;
+        tempFinish.AddComponent<DeathScript>();
+        tempFinish.GetComponent<DeathScript>().Player = Player;
+        tempFinish.GetComponent<DeathScript>().Spawn = Spawn;
+
+
+
+
     }
 
     private void placeObjects(InteractableObject objectToSpawn, Transform transform)
