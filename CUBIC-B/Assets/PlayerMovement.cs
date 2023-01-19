@@ -19,6 +19,9 @@ public class PlayerMovement : MonoBehaviour
     public int jumpcount { get; set; }
     private float backUpSpeed { get; set; }
     private bool doResetTime = false;
+    public float durationAbilities;
+    public float timeScaling ;
+    public float increasedSpeed ;
     // Start is called before the first frame update
 
     private void Awake()
@@ -26,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
         animator= gameObject.GetComponent<Animator>(); 
         backUpSpeed =  Speed;
         rb = GetComponent<Rigidbody2D>();
-        DoubleJumpIsActive = true;
+        DoubleJumpIsActive = false;
         IsJumping = false;
         FacingRight = true;
         IsOnFloor = true;
@@ -62,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (doResetTime)
         {
-            ResetTimescale();
+            resetTimescale();
         }
     }
 
@@ -116,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
                     rb.AddRelativeForce(new Vector2(rb.velocity.x, Jump + (rb.velocity.y)));
 
                 }
-
+                IsJumping = true;
                 Debug.Log("jump pressed");
                 jumpcount++;
 
@@ -138,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = 0.7f;
         System.Timers.Timer timer = new();
         timer.Elapsed += setToResetTime;
-        timer.Interval = 3000;
+        timer.Interval = durationAbilities;
         timer.Start();
     }
 
@@ -147,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
         doResetTime= true;
     }
 
-    public void ResetTimescale()
+    public void resetTimescale()
     {
         Time.timeScale = 1;
         doResetTime= false;
@@ -155,9 +158,9 @@ public class PlayerMovement : MonoBehaviour
 
     public void triggerIncreasedSpeed()
     {
-        Speed = 25;
+        Speed = increasedSpeed;
         System.Timers.Timer timer = new();
-        timer.Interval = 3000;
+        timer.Interval = durationAbilities;
         timer.Elapsed += resetSpeed;
         timer.AutoReset = false;
         timer.Start();
@@ -171,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
     {
         DoubleJumpIsActive = true;
         System.Timers.Timer timer = new();
-        timer.Interval = 3000;
+        timer.Interval = durationAbilities;
         timer.Elapsed += resetDoubleJump;
         timer.AutoReset = false;
         timer.Start();
@@ -185,7 +188,7 @@ public class PlayerMovement : MonoBehaviour
     private void cancelAllAbilities()
     {
         Speed = backUpSpeed;
-        Time.timeScale = 1f;
+        resetTimescale();
         DoubleJumpIsActive = false;
     }
 
