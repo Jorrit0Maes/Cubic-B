@@ -527,8 +527,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 5
   Jump: 200
-  IsOnFloor: 1
-  animator: {fileID: 2043739074}
   DoubleJumpIsActive: 0
-  jumpcount: 1
-  backUpSpeed: 0

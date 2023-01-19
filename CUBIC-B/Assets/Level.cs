@@ -28,6 +28,9 @@ public class Level : MonoBehaviour
     public float sizeOfAbilityObject;
     public int aantalAbilities;
     List<String> listOfAbilities = new List<string> { "speed", "time", "double" };
+    public Transform deathBoxPreFab;
+    public GameObject Player;
+    public GameObject Spawn;
 
 
     private void Awake()
@@ -97,16 +100,26 @@ public class Level : MonoBehaviour
 
             Platform tempPlatform = new Platform(new Vector2(lastPoint.x+xSpacing, lastPoint.y + ySpacing), new Vector2(lastPoint.x +xSpacing+(length), lastPoint.y + ySpacing - 1));
             
-            lengthleft -= length;
-            lastPoint.x = tempPlatform.endPoint.x;
-            //top that matters for matching new platform
-            lastPoint.y = tempPlatform.startPoint.y;  
-
 
             var tempInitiated = Instantiate(squareExmp, tempPlatform.origin , Quaternion.identity);
             tempInitiated.localScale = new Vector3(length, 1, 1);
+            DeathBox deathBox = new ();
+            deathBox.startPoint = new(lastPoint.x - 2 , tempPlatform.endPoint.y-1);
+            deathBox.endPoint = new(tempPlatform.startPoint.x + 2, tempPlatform.endPoint.y-2);
+            var tempDeathbox = Instantiate(deathBoxPreFab, deathBox.origin, Quaternion.identity);
+            deathBox.length = deathBox.endPoint.x- deathBox.startPoint.x;
+            tempDeathbox.localScale = new(deathBox.length,1,1);
+            tempDeathbox.GetComponent<DeathScript>().Player = Player;
+            tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
+           
 
             platforms.Add(tempPlatform);
+
+
+            lengthleft -= length;
+            lastPoint.x = tempPlatform.endPoint.x;
+            //top that matters for matching new platform
+            lastPoint.y = tempPlatform.startPoint.y;
         }
 
        
