@@ -6,4 +6,5 @@ using UnityEngine.WSA;
 public interface Ability 
 {
     public void Activate(GameObject Player);
+    
 }
