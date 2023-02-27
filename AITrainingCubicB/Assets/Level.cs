@@ -350,7 +350,7 @@ public class Level : MonoBehaviour
                 //will be first thing to spawn so redundant to check if it is spawned in something else
                 interactableObjects.Add(abilityObjectTemplate);
                 Transform abilityTransform = Instantiate(transform, ouder, false);
-                abilityTransform.position = abilityObjectTemplate.origin;
+                abilityTransform.localPosition = abilityObjectTemplate.origin;
                 abilityTransform.rotation = Quaternion.identity;
                 abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.heigth, 0);
 
