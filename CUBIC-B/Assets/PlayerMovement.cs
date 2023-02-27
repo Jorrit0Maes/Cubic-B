@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle"))
         {
             IsOnFloor  = true;
             animator.SetBool("onGround", IsOnFloor);
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle"))
         {
             IsOnFloor = false;
             animator.SetBool("onGround", IsOnFloor);

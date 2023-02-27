@@ -206,7 +206,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &519420033
 MonoBehaviour:
@@ -355,10 +355,12 @@ MonoBehaviour:
   minPlatformXspacing: 150
   squareExmp: {fileID: 3393746217995265446, guid: 04901d7c93a160c4286528176c4c50a6, type: 3}
   roundExmp: {fileID: 5252337178548027911, guid: deeb524f77ae1d048ac1f52087640b7f, type: 3}
+  pikeExmp: {fileID: 9115080843937230790, guid: 0ccf796214dedc84e91bd07370ffd9e8, type: 3}
   sizeOfBox: 0.5
+  maxNumberOfPikes: 3
   sizeOfAbilityObject: 1
-  aantalAbilities: 3
-  deathBoxPreFab: {fileID: 3079309289950075038, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+  aantalAbilities: 2
+  deathBoxPreFab: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
   Player: {fileID: 2043739073}
   Spawn: {fileID: 1761946025}
 --- !u!1001 &1676243196
@@ -368,6 +370,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 12.931641
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3648683
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8852872
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.46504474
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -55.426
+      objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651285, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: m_TagString
+      value: DeathBox
+      objectReference: {fileID: 0}
     - target: {fileID: 3079309289950075033, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
       propertyPath: m_Name
       value: DeathBox
@@ -558,7 +600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043739073}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.11, y: 3.29, z: 0}
+  m_LocalPosition: {x: 0, y: 3.29, z: 0}
   m_LocalScale: {x: 1.4169219, y: 1.4547722, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

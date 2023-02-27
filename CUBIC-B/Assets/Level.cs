@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Level : MonoBehaviour
 {
@@ -23,16 +20,20 @@ public class Level : MonoBehaviour
     public int minPlatformXspacing;
     public Transform squareExmp;
     public Transform roundExmp;
+    public Transform pikeExmp;
     private List<Platform> platforms;
     ArrayList interactableObjects = new ArrayList();
     public float sizeOfBox;
+    public int maxNumberOfPikes;
     public float sizeOfAbilityObject;
     public int aantalAbilities;
-    List<String> listOfAbilities = new List<string> { "speed", "time", "double" };
+    List<String> listOfAbilities = new List<string> { "speed", "double" };
     public Transform deathBoxPreFab;
     public GameObject Player;
     public GameObject Spawn;
     private List<AbilityObject> spawnedAbilities;
+    private List<AbilityObject> spawnedDoubleJumps;
+
     private int SpeedBoostAdjustments;
 
 
@@ -40,6 +41,7 @@ public class Level : MonoBehaviour
     private void Awake()
     {
         spawnedAbilities = new List<AbilityObject>();
+        spawnedDoubleJumps = new List<AbilityObject>();
         SpeedBoostAdjustments = 0;
         DetermineAbilityXCoordinates();
         generateLevelPlatforms();
@@ -47,11 +49,18 @@ public class Level : MonoBehaviour
         abilityObject.length = sizeOfAbilityObject;
         abilityObject.heigth = sizeOfAbilityObject;
         placeAbilities(abilityObject, roundExmp);
-        Box boxtemp = new Box();
+        Box boxtemp = new();
         boxtemp.heigth = sizeOfBox;
         boxtemp.length = sizeOfBox; 
         placeObjects(boxtemp, squareExmp);
-        
+        Pike piketemp = new();
+        piketemp.length = sizeOfBox;
+        piketemp.heigth = sizeOfBox;
+        pikeExmp.GetComponent<DeathScript>().Spawn = Spawn;
+        pikeExmp.GetComponent<DeathScript>().Player= Player;
+        placePikes(piketemp, pikeExmp);
+
+
 
     }
 
@@ -96,7 +105,7 @@ public class Level : MonoBehaviour
             if (SpeedBoostAdjustments < spawnedAbilities.FindAll(x => x.Ability is SpeedBoost).Count && lastPoint.x > spawnedAbilities.FindAll(x => x.Ability is SpeedBoost)[SpeedBoostAdjustments].startPoint.x)
             {
                 SpeedBoostAdjustments += 1;
-                xSpacing *= 4;
+                xSpacing *= 3;
             }
 
             // if ySpacing is large xSpacing gets smaller so we can make the jump
@@ -123,6 +132,7 @@ public class Level : MonoBehaviour
 
             var tempDeathbox = Instantiate(deathBoxPreFab, deathBox.origin, Quaternion.identity);
             deathBox.length = deathBox.endPoint.x- deathBox.startPoint.x;
+            tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
             tempDeathbox.GetComponent<DeathScript>().Player = Player;
             tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
@@ -145,6 +155,7 @@ public class Level : MonoBehaviour
         lastdeathBox.endPoint = new(lastPoint.x + 10,lastPoint.y - 4);
         var tempLastDeathbox = Instantiate(deathBoxPreFab, lastdeathBox.origin, Quaternion.identity);
         lastdeathBox.length = lastdeathBox.endPoint.x - lastdeathBox.startPoint.x;
+        tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
         tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
         tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
@@ -160,8 +171,9 @@ public class Level : MonoBehaviour
 
     }
 
-    private void placeObjects(InteractableObject objectToSpawn, Transform transform)
+    private void placeObjects(InteractableObject objectToSpawnTemplate, Transform transform)
     {
+        
 
         System.Random random = new System.Random();
 
@@ -170,39 +182,69 @@ public class Level : MonoBehaviour
 
             float platformlength = platform.endPoint.x - platform.startPoint.x;
             int chanceofBoxSpawning = random.Next(minPlatformSize,maxPlatformSize);
-          
+            //if the platform has a doublejump on it not near the end always spawn obstacles or if the double jump is near the start of the platform
+            bool DoubleJumpPlatform = !spawnedDoubleJumps.Find(e => (e.startPoint.x >= platform.startPoint.x && e.startPoint.x <= platform.endPoint.x - 5)).IsUnityNull() || !spawnedDoubleJumps.Find(e => (e.startPoint.x >= platform.startPoint.x -5 && e.startPoint.x <= platform.startPoint.x )).IsUnityNull();
+           
 
             // the larger the platform the higher the chance of a box spawning or if big enough we defintetly spawn .
-            if (platformlength >= maxPlatformSize / 2 || chanceofBoxSpawning < platformlength)
+            if (platformlength >= maxPlatformSize / 3 || chanceofBoxSpawning < platformlength ||DoubleJumpPlatform)
             {
                 // we ensure not to fill the platform with so much boxes that it is all box  => platformLength/3 = number of boxes *sizeof of a box only half of the length filled
-                int maxNumberOfObstacles = (int)Math.Floor(platformlength / 3 * sizeOfBox);//size of box is kleiner dan nul dus verlagen door vermenigvuldiging
+                int maxNumberOfObstacles = (int)Math.Floor(platformlength * sizeOfBox);//size of box is kleiner dan nul dus verlagen door vermenigvuldiging
 
-                random.Next(maxNumberOfObstacles);
+                int numberofObstacles = random.Next(maxNumberOfObstacles);
 
-                for (int i = 0; i < maxNumberOfObstacles; i++)
+                if(DoubleJumpPlatform) {  numberofObstacles = numberofObstacles + (int) Math.Ceiling(numberofObstacles *0.5); }
+                for (int i = 0; i < numberofObstacles; i++)
                 {
+                    InteractableObject boxClone = new Pike();
+                    boxClone.length = objectToSpawnTemplate.length;
+                    boxClone.heigth = objectToSpawnTemplate.heigth;
+
                     //to not put it on the front edge so we can make the jump or off the platform we adjust the limits
                     int obstacleVectorX = random.Next((int)Math.Ceiling(platform.startPoint.x) + 1, (int)platform.endPoint.x - 1);
-                    objectToSpawn.startPoint = new Vector2(obstacleVectorX, platform.startPoint.y);
+                    boxClone.startPoint = new Vector2(obstacleVectorX, platform.startPoint.y);
 
-                    if (interactableObjects.Count == 0 || !checkIfObjectInsideOther(interactableObjects, objectToSpawn))
+
+                    if (interactableObjects.Count == 0 || !checkIfObjectInsideOther(interactableObjects, boxClone))
                     {
                         foreach (AbilityObject ab in spawnedAbilities.FindAll(x => x.Ability is DoubleJump))
                         {
-                            if (objectToSpawn.startPoint.x > ab.startPoint.x && objectToSpawn.startPoint.x < 15 + ab.startPoint.x)
+                            //if it comes after the actual doubleJump on the platform we double the height we need to do change the objects height to determine the right origin but just doubling it will double it everytime and keep it doubles because it is a refernce so we set it back after we are done
+                            if (boxClone.startPoint.x > ab.startPoint.x +1 && boxClone.startPoint.x < 10 + ab.startPoint.x)
                             {
-                                objectToSpawn.heigth *=2;
+                                boxClone.heigth  *= 2;
+                                interactableObjects.Add(boxClone);
+                                Transform t = Instantiate(transform, boxClone.origin, Quaternion.identity);
+                                t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
+                                t.tag = "Obstacle";
+                                t.name = "BOX" + i.ToString();
+                                t.localScale = new Vector3(boxClone.length, boxClone.heigth, 0);
+                                boxClone.heigth /= 2;
                             }
+                            // if not we just spawn
+                            else{
+                                interactableObjects.Add(boxClone);
+                                Transform t = Instantiate(transform, boxClone.origin, Quaternion.identity);
+                                t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
+                                t.tag = "Obstacle";
+                                t.name = "BOX" + i.ToString();
+
+                                t.localScale = new Vector3(boxClone.length, boxClone.heigth, 0);
+                            }
+
                         }
 
-                        
-                        interactableObjects.Add(objectToSpawn);
-                        Transform t = Instantiate(transform, objectToSpawn.origin, Quaternion.identity);
-                        t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
-                        t.localScale = new Vector3(objectToSpawn.length, objectToSpawn.heigth, 0);
+                       /* //check if after a doubleJump power up
+                        foreach (AbilityObject ABObj in spawnedAbilities.FindAll(e => e.Ability is DoubleJump))
+                        {
+                            //comes after the upgrade and before it's start + 10
+                            if (objectToSpawn.startPoint.x > ABObj.startPoint.x + 1 && objectToSpawn.startPoint.x < ABObj.startPoint.x + 10)
+                            {
+                                t.localScale = new Vector3(objectToSpawn.length, objectToSpawn.heigth*2, 0);
+                            }
+                        }*/
 
-                        
                     }
                 }
             }
@@ -210,14 +252,102 @@ public class Level : MonoBehaviour
 
     }
 
-    private bool checkIfObjectInsideOther(ArrayList alreadySpawnedObjects, InteractableObject boxTemplate)
+    private void placePikes(InteractableObject PikeTemplate, Transform transform)
+    {
+
+       
+
+        System.Random random = new System.Random();
+
+        foreach (Platform platform in platforms)
+        {
+
+            float platformlength = platform.endPoint.x - platform.startPoint.x;
+            int chanceofBoxSpawning = random.Next(minPlatformSize, maxPlatformSize);
+            //if the platform has a doublejump on it not near the end always spawn obstacles or if the double jump is near the start of the platform
+            bool DoubleJumpPlatform = !spawnedDoubleJumps.Find(e => (e.startPoint.x >= platform.startPoint.x && e.startPoint.x <= platform.endPoint.x - 5)).IsUnityNull() || !spawnedDoubleJumps.Find(e => (e.startPoint.x >= platform.startPoint.x - 5 && e.startPoint.x <= platform.startPoint.x)).IsUnityNull();
+
+
+            // the larger the platform the higher the chance of a box spawning or if big enough we defintetly spawn .
+            if (platformlength >= maxPlatformSize / 3 || chanceofBoxSpawning < platformlength || DoubleJumpPlatform)
+            {
+                // we ensure not to fill the platform with so much boxes that it is all box  => platformLength/3 = number of boxes *sizeof of a box only half of the length filled
+                int maxNumberOfObstacles = (int)Math.Floor(platformlength * sizeOfBox);//size of box is kleiner dan nul dus verlagen door vermenigvuldiging
+
+                int numberofObstacles = random.Next(maxNumberOfObstacles);
+
+                if (DoubleJumpPlatform) { numberofObstacles = numberofObstacles + (int)Math.Ceiling(numberofObstacles * 0.5); }
+                for (int i = 0; i < numberofObstacles; i++)
+                {
+                    InteractableObject pikeClone = new Pike();
+                    pikeClone.length = PikeTemplate.length;
+                    pikeClone.heigth = PikeTemplate.heigth;
+                    //to not put it on the front edge so we can jump on or off the platform we adjust the limits
+                    int obstacleVectorX = random.Next((int)Math.Ceiling(platform.startPoint.x) + 1, (int)platform.endPoint.x - 1);
+                    pikeClone.startPoint = new Vector2(obstacleVectorX, platform.startPoint.y);
+
+                    //random 1 2 of 3 pikes achter elkaar om de lengte te bepalen
+                    int pikelength = random.Next(maxNumberOfPikes) +1;
+
+                    // als er pikes kunnen worden gezet maar gewoon niet zoveel als de random heeft geselecteerd gaan we voor het max aantal dat wel gaat
+                    InteractableObject tempPike = new Pike();
+                    tempPike.startPoint = pikeClone.startPoint;
+                    tempPike.heigth = pikeClone.heigth; 
+                    tempPike.length = pikelength * pikeClone.length;
+                    int k = 0;
+                    //als de hele lengte gespawned kan worden geen probleem en geeft de "checkIfObjectInsideOther" false en stappen we niet in de while loop en de minimum lengte moet 1 zijn dus k < pikelength
+                    while (k < pikelength && checkIfObjectInsideOther(interactableObjects, tempPike))
+                    {
+                        k++;
+                        // we verlagen het aantal pikes met 1 en de while checkt of dit werkt
+                        tempPike.length = (pikelength - k) * pikeClone.length;
+                        pikelength -= k;
+                        
+                    }
+                    
+                    if (interactableObjects.Count == 0 || !checkIfObjectInsideOther(interactableObjects, tempPike))
+                    {
+                        interactableObjects.Add(tempPike);
+                        foreach (AbilityObject ab in spawnedAbilities.FindAll(x => x.Ability is DoubleJump))
+                        {
+                            //check if it comes after the actual doubleJump on the platform 
+                            if (pikeClone.startPoint.x > ab.startPoint.x + 1 && pikeClone.startPoint.x < 10 + ab.startPoint.x)
+                            {
+                                //bij een doublejump maken we deze twee keer zo lang
+                                pikelength *= 2;
+                            }
+
+                            for (int j = 0; j < pikelength; j++)
+                            {
+                                
+                                Transform t = Instantiate(transform, pikeClone.origin, Quaternion.identity);
+                                t.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                                t.tag = "Pike";
+                                t.name = "PIKE"+ i.ToString();
+                                t.localScale = new Vector3(pikeClone.length, pikeClone.heigth, 0);
+                                pikeClone.startPoint = new (pikeClone.endPoint.x, pikeClone.startPoint.y);
+                            }
+
+                        }
+
+                        
+
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    private bool checkIfObjectInsideOther(ArrayList alreadySpawnedObjects, InteractableObject newObject)
     {
        if(alreadySpawnedObjects.Count == 0) return false;
 
-       foreach(InteractableObject box in alreadySpawnedObjects)
+       foreach(InteractableObject alreadyOnMapObject in alreadySpawnedObjects)
        {
             //check of het startpunt van de box tussen het einde of begin van de al bestaande boxen valt of korter voor het begin dan de box die bijkomt lang is
-            if(box.startPoint.x <= boxTemplate.startPoint.x - boxTemplate.length && boxTemplate.endPoint.x <= box.endPoint.x)
+            if ( startPointInObject(alreadyOnMapObject, newObject) || endPointInObject(alreadyOnMapObject,newObject)) 
             {
                 return true;
             }
@@ -255,10 +385,10 @@ public class Level : MonoBehaviour
                     abilityObject.Ability = new SpeedBoost();
                     listOfAbilities.Remove("speed");
                     break;
-                case "time":
+                /*case "time":
                     abilityObject.Ability = new SlowmotionToggle();
                     listOfAbilities.Remove("time");
-                    break;
+                    break;*/
                 case "double":
                     abilityObject.Ability = new DoubleJump();
                     listOfAbilities.Remove("double");
@@ -299,21 +429,33 @@ public class Level : MonoBehaviour
 
                 if (ability.Ability is SpeedBoost)
                 {
-                    abilityTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow; 
-                }else if(ability.Ability is SlowmotionToggle)
+                    abilityTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                    abilityTransform.tag = "SpeedBoost";
+                }/*else if(ability.Ability is SlowmotionToggle)
                 {
                     abilityTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                }
+                }*/
                 else if (ability.Ability is DoubleJump)
                 {
                     abilityTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+                    abilityTransform.tag = "DoubleJump";
                 }
 
             }
             
         }
 
+        spawnedDoubleJumps.AddRange(spawnedAbilities.FindAll(e => e.Ability is DoubleJump));
         
     }
 
+
+    public bool startPointInObject(InteractableObject albestaand, InteractableObject nieuw)
+    {
+        return (albestaand.startPoint.x <= nieuw.startPoint.x && nieuw.startPoint.x <= albestaand.endPoint.x);
+    }
+    public bool endPointInObject(InteractableObject albestaand, InteractableObject nieuw)
+    {
+        return (albestaand.startPoint.x <= nieuw.endPoint.x && nieuw.endPoint.x <= albestaand.endPoint.x);
+    }
 }

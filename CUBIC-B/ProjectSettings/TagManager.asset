@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Ground
   - Spawn
+  - DoubleJump
+  - SpeedBoost
+  - Obstacle
+  - DeathBox
+  - Pike
   layers:
   - Default
   - TransparentFX
