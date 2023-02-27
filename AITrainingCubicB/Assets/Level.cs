@@ -122,23 +122,25 @@ public class Level : MonoBehaviour
             Platform tempPlatform = new Platform(new Vector2(lastPoint.x+xSpacing, lastPoint.y + ySpacing), new Vector2(lastPoint.x +xSpacing+(length), lastPoint.y + ySpacing - 1));
             
 
-            var tempInitiated = Instantiate(squareExmp, tempPlatform.origin , Quaternion.identity);
+            var tempInitiated = Instantiate(squareExmp, ouder, false);
+            tempInitiated.localPosition = tempPlatform.origin;
+            tempInitiated.localRotation = Quaternion.identity;
             tempInitiated.tag = "Ground";
             tempInitiated.localScale = new Vector3(length, 1, 1);
-            tempInitiated.parent = ouder;
             DeathBox deathBox = new ();
             deathBox.startPoint = new(lastPoint.x - 2 , tempPlatform.endPoint.y-1);
             deathBox.endPoint = new(tempPlatform.startPoint.x + 2, tempPlatform.endPoint.y-2);
             
 
-            var tempDeathbox = Instantiate(deathBoxPreFab, deathBox.origin, Quaternion.identity);
+            var tempDeathbox = Instantiate(deathBoxPreFab, ouder, false);
+            tempDeathbox.localPosition = deathBox.origin;
+            tempInitiated.localRotation = Quaternion.identity;  
             tempDeathbox.tag = "Ground";
             deathBox.length = deathBox.endPoint.x- deathBox.startPoint.x;
             tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
             tempDeathbox.GetComponent<DeathScript>().Player = Player;
             tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
-            tempDeathbox.parent= ouder;
            
 
             platforms.Add(tempPlatform);
@@ -156,14 +158,15 @@ public class Level : MonoBehaviour
         DeathBox lastdeathBox = new();
         lastdeathBox.startPoint = new(lastPoint.x - 2, lastPoint.y -3) ;
         lastdeathBox.endPoint = new(lastPoint.x + 10,lastPoint.y - 4);
-        var tempLastDeathbox = Instantiate(deathBoxPreFab, lastdeathBox.origin, Quaternion.identity);
+        var tempLastDeathbox = Instantiate(deathBoxPreFab, ouder, false);
+        tempLastDeathbox.localPosition = lastdeathBox.origin;
+        tempLastDeathbox.rotation = Quaternion.identity;
         tempLastDeathbox.tag = "DeathBox";
         lastdeathBox.length = lastdeathBox.endPoint.x - lastdeathBox.startPoint.x;
         tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
         tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
         tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
-        tempLastDeathbox.parent= ouder;
 
         Finish.localPosition = new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f);
         
@@ -214,23 +217,26 @@ public class Level : MonoBehaviour
                             {
                                 objectToSpawnTemplate.heigth  *= 2;
                                 interactableObjects.Add(objectToSpawnTemplate);
-                                Transform t = Instantiate(transform, objectToSpawnTemplate.origin, Quaternion.identity);
+                                Transform t = Instantiate(transform, ouder, false);
+                                t.localPosition = objectToSpawnTemplate.origin; 
+                                t.localRotation = Quaternion.identity;
                                 t.tag = "Obstacle";
                                 t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
                                 t.tag = "Obstacle";
                                 t.localScale = new Vector3(objectToSpawnTemplate.length, objectToSpawnTemplate.heigth, 0);
-                                t.parent = ouder;
+                                
                                 objectToSpawnTemplate.heigth /= 2;
                             }
                             // if not we just spanwn
                             else{
                                 interactableObjects.Add(objectToSpawnTemplate);
-                                Transform t = Instantiate(transform, objectToSpawnTemplate.origin, Quaternion.identity);
+                                Transform t = Instantiate(transform, ouder, false);
+                                t.localPosition = objectToSpawnTemplate.origin;
+                                t.localRotation = Quaternion.identity;
                                 t.tag = "Obstacle";
                                 t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
                                 t.tag = "Obstacle";
                                 t.localScale = new Vector3(objectToSpawnTemplate.length, objectToSpawnTemplate.heigth, 0);
-                                t.parent = ouder;
                             }
 
                         }
@@ -343,9 +349,10 @@ public class Level : MonoBehaviour
 
                 //will be first thing to spawn so redundant to check if it is spawned in something else
                 interactableObjects.Add(abilityObjectTemplate);
-                Transform abilityTransform = Instantiate(transform, abilityObjectTemplate.origin, Quaternion.identity);
+                Transform abilityTransform = Instantiate(transform, ouder, false);
+                abilityTransform.position = abilityObjectTemplate.origin;
+                abilityTransform.rotation = Quaternion.identity;
                 abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.heigth, 0);
-                abilityTransform.parent = ouder;
 
                 abilityTransform.gameObject.GetComponent<GiveAbilityScript>().ability = ability.Ability;
 
