@@ -23,7 +23,7 @@ public class Level : MonoBehaviour
     public Transform pikeExmp;
     public Transform missleExmp;
     private List<Platform> platforms;
-    private ArrayList interactableObjects = new ArrayList();
+    private ArrayList interactableObjects ;
     public float sizeOfBox;
     public int maxNumberOfPikes;
     public float sizeOfAbilityObject;
@@ -50,6 +50,7 @@ public class Level : MonoBehaviour
     public Transform Finish;
     private void spawns()
     {
+        interactableObjects = new ArrayList();
         spawnedAbilities = new List<AbilityObject>();
         spawnedDoubleJumps = new List<AbilityObject>();
         listOfAbilities = new List<string> { "speed", "double" };
