@@ -11,6 +11,8 @@ TagManager:
   - Obstacle
   - DeathBox
   - Pike
+  - WallJump
+  - Missle
   layers:
   - Default
   - TransparentFX

@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &259555542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 259555543}
+  m_Layer: 0
+  m_Name: Level
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &259555543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259555542}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,8 +378,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxLevelLength: 200
   minSizeLastPlatform: 5
-  maxPlatformSize: 28
-  minPlatformSize: 3
+  maxPlatformSize: 30
+  minPlatformSize: 5
   maxPlatformYSpacing: 75
   minPlatformYSpacing: 45
   maxPlatformXSpacing: 300
@@ -356,13 +387,20 @@ MonoBehaviour:
   squareExmp: {fileID: 3393746217995265446, guid: 04901d7c93a160c4286528176c4c50a6, type: 3}
   roundExmp: {fileID: 5252337178548027911, guid: deeb524f77ae1d048ac1f52087640b7f, type: 3}
   pikeExmp: {fileID: 9115080843937230790, guid: 0ccf796214dedc84e91bd07370ffd9e8, type: 3}
+  missleExmp: {fileID: 7970882597293075098, guid: eeebc3bb49975884eb21335358c7222c, type: 3}
   sizeOfBox: 0.5
   maxNumberOfPikes: 3
   sizeOfAbilityObject: 1
   aantalAbilities: 2
+  missleLength: 1
+  missleHeigth: 0.5
+  missleSpeed: 5
   deathBoxPreFab: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
   Player: {fileID: 2043739073}
   Spawn: {fileID: 1761946025}
+  minPlatformLentghForMissle: 7
+  chanceOfMissleSpawning: 80
+  ouder: {fileID: 259555543}
 --- !u!1001 &1676243196
 PrefabInstance:
   m_ObjectHideFlags: 0
