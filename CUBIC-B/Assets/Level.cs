@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ public class Level : MonoBehaviour
     public int maxNumberOfPikes;
     public float sizeOfAbilityObject;
     public int aantalAbilities;
+    public float respawnTimer;
     public float missleLength;
     public float missleHeigth;
     public float missleSpeed;
@@ -39,6 +41,9 @@ public class Level : MonoBehaviour
     private List<AbilityObject> spawnedDoubleJumps;
 
     private int SpeedBoostAdjustments;
+
+    private List<Transform> abilityTransforms= new List<Transform>();
+
 
 
     public float minPlatformLentghForMissle;
@@ -87,10 +92,25 @@ public class Level : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        foreach ( Transform trans in abilityTransforms)
+        {
+            if (!trans.gameObject.activeSelf)
+            {
+                StartCoroutine(RespawnObject(trans.gameObject, respawnTimer ));
+
+            }
+        }
+
+       
+
+
     }
 
-
+    private IEnumerator RespawnObject(GameObject toRespawn, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        toRespawn.SetActive(true);
+    }
 
     private void generateLevelPlatforms()
     {
@@ -476,6 +496,7 @@ public class Level : MonoBehaviour
                 abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.heigth, 0);
 
                 abilityTransform.gameObject.GetComponent<GiveAbilityScript>().ability = ability.Ability;
+                abilityTransforms.Add(abilityTransform);
 
                 if (ability.Ability is SpeedBoost)
                 {

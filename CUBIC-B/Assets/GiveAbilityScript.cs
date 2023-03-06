@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -26,7 +28,10 @@ public class GiveAbilityScript : MonoBehaviour
             collision.gameObject.GetComponent<PlayerMovement>().Invoke("cancelAllAbilities",0);
             ability.Activate(collision.gameObject);
             gameObject.SetActive(false);
+           
 
         }
     }
+
+    
 }

@@ -392,6 +392,7 @@ MonoBehaviour:
   maxNumberOfPikes: 3
   sizeOfAbilityObject: 1
   aantalAbilities: 2
+  respawnTimer: 2.5
   missleLength: 1
   missleHeigth: 0.5
   missleSpeed: 5
@@ -448,6 +449,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: DeathBox
       objectReference: {fileID: 0}
+    - target: {fileID: 274004979011651287, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: Spawn
+      value: 
+      objectReference: {fileID: 1761946025}
+    - target: {fileID: 274004979011651287, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 2043739073}
     - target: {fileID: 3079309289950075033, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
       propertyPath: m_Name
       value: DeathBox
@@ -638,7 +647,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043739073}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.29, z: 0}
+  m_LocalPosition: {x: 0.262, y: 3.362, z: 0}
   m_LocalScale: {x: 1.4169219, y: 1.4547722, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
