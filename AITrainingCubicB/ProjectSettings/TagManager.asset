@@ -9,6 +9,8 @@ TagManager:
   - SpeedBoost
   - DoubleJump
   - Obstacle
+  - Pike
+  - Missle
   layers:
   - Default
   - TransparentFX

@@ -770,7 +770,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276694037}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 150.4363, y: 5.7826896, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -911,14 +911,22 @@ MonoBehaviour:
   minPlatformXspacing: 150
   squareExmp: {fileID: 7808771213283083061, guid: e0f44198fc7806b4094580c2875ade0d, type: 3}
   roundExmp: {fileID: 2213134715893975999, guid: 88c28c4319f35784cbcc5a61928fdad6, type: 3}
+  pikeExmp: {fileID: 7568841764919451037, guid: 7ad68e63a1dfc104f9d23fd357f5b76d, type: 3}
+  missleExmp: {fileID: 3939978296257070032, guid: 6ed729e433e6ed54a8a81e2ca10a624f, type: 3}
   sizeOfBox: 0.5
+  maxNumberOfPikes: 3
   sizeOfAbilityObject: 1
   aantalAbilities: 2
+  missleLength: 1
+  missleHeigth: 0.5
+  missleSpeed: 5
   deathBoxPreFab: {fileID: 8897906634429326683, guid: 5cc55132b0fc28a409f37aab0729001d, type: 3}
   Player: {fileID: 693623834}
   Spawn: {fileID: 585396706}
-  Finish: {fileID: 632363251}
+  minPlatformLentghForMissle: 10
+  chanceOfMissleSpawning: 80
   ouder: {fileID: 1276694038}
+  Finish: {fileID: 632363251}
 --- !u!1 &2145183977
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,7 +951,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145183977}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -3.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:

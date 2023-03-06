@@ -26,7 +26,7 @@ public class PlayerMovement : Agent
     public float timeScaling ;
     public float increasedSpeed ;
     public float activeAbility;
-    public bool DIED = false;
+    public bool reset = false;
     // Start is called before the first frame update
 
     public Transform Target;
@@ -61,7 +61,7 @@ public class PlayerMovement : Agent
 
     private void timeRanOut(object sender, ElapsedEventArgs e)
     {
-        DIED= true;
+        reset= true;
     }
 
     public override void OnEpisodeBegin()
@@ -81,7 +81,7 @@ public class PlayerMovement : Agent
 
         this.rb.velocity = Vector3.zero;
         this.transform.localPosition = new Vector3(0, 2.55f, 0);
-        DIED= false;
+        reset = false;
         shortestDistanceToEnd= 0;
         activeAbility= 0;
         episodeCounter++;
@@ -131,6 +131,8 @@ public class PlayerMovement : Agent
             IsJumping = true;
             jumpcount++;
         }
+
+        
         // Rewards
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
 
@@ -144,7 +146,7 @@ public class PlayerMovement : Agent
             
         }
 
-        if (DIED)
+        if (reset)
         {
             AddReward(-100f);
             curentReward = GetCumulativeReward();
@@ -191,10 +193,7 @@ public class PlayerMovement : Agent
             jumpcount = 1;
            
         }
-        if (other.gameObject.CompareTag("DeathBox"))
-        {
-            DIED = true;
-        }
+        
     }
 
     protected void OnCollisionExit2D(Collision2D other)
