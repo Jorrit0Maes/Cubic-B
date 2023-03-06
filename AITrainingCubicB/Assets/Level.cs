@@ -416,8 +416,8 @@ public class Level : MonoBehaviour
 
     private bool checkIllegalToSpawn(ArrayList alreadySpawnedObjects, InteractableObject newObject)
     {
-        if (alreadySpawnedObjects.Count == 0) return false;
         if (isNotOnPlatform(newObject)) return true;
+        if (alreadySpawnedObjects.Count == 0) return false;
 
         foreach (InteractableObject alreadyOnMapObject in alreadySpawnedObjects)
         {
