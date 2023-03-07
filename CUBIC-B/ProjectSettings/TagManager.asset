@@ -13,6 +13,7 @@ TagManager:
   - Pike
   - WallJump
   - Missle
+  - Machine
   layers:
   - Default
   - TransparentFX

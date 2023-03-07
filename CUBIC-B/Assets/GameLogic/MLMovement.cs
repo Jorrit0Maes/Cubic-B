@@ -86,31 +86,6 @@ public class MLMovement : Agent
     }
    
 
-    public override void OnEpisodeBegin()
-    {
-        cancelAllAbilities();
-        timer.Stop();
-        timer.Start();
-        for (int i = 0; i < level.childCount; i++)
-        {
-            if (level.GetChild(i).name != "Finish")
-            {
-                Destroy(level.GetChild(i).gameObject, 0);
-            }
-        }
-
-        SpawnSquare.GetComponent<Level>().Invoke("spawns", 0);
-
-        this.rb.velocity = Vector3.zero;
-        this.transform.localPosition = new Vector3(0, 2.55f, 0);
-        reset = false;
-        shortestDistanceToEnd = 0;
-        activeAbility = 0;
-        episodeCounter++;
-
-        lastEpisodeReward = curentReward;
-        curentReward = 0;
-    }
 
     public override void CollectObservations(VectorSensor sensor)
     {

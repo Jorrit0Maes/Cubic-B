@@ -928,7 +928,7 @@ GameObject:
   - component: {fileID: 2043739079}
   m_Layer: 2
   m_Name: ML
-  m_TagString: Player
+  m_TagString: Machine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -22,7 +22,7 @@ public class GiveAbilityScript : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") )
         {
             //eerst de active abilities uit zetten
             collision.gameObject.GetComponent<PlayerMovement>().Invoke("cancelAllAbilities",0);
@@ -30,6 +30,11 @@ public class GiveAbilityScript : MonoBehaviour
             gameObject.SetActive(false);
            
 
+        }else if (collision.gameObject.CompareTag("Machine"))
+        {
+            collision.gameObject.GetComponent<MLMovement>().Invoke("cancelAllAbilities", 0);
+            ability.Activate(collision.gameObject);
+            gameObject.SetActive(false);
         }
     }
 

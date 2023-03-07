@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y ==0)
+        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y == 0)
         {
             IsOnFloor  = true;
             animator.SetBool("onGround", IsOnFloor);

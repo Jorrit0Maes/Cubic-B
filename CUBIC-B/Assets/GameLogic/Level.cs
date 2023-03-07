@@ -35,6 +35,7 @@ public class Level : MonoBehaviour
     public float missleSpeed;
     List<String> listOfAbilities = new List<string> { "speed", "double" };
     public Transform deathBoxPreFab;
+    public GameObject MLModel;
     public GameObject Player;
     public GameObject Spawn;
     private List<AbilityObject> spawnedAbilities;
@@ -159,13 +160,15 @@ public class Level : MonoBehaviour
             tempPlatform.length = length;
             
 
-            var tempInitiated = Instantiate(squareExmp, tempPlatform.origin , Quaternion.identity);
+            var tempInitiated = Instantiate(squareExmp, ouder, false);
+            tempInitiated.localPosition = tempPlatform.origin;
             tempInitiated.localScale = new Vector3(length, 1, 1);
             DeathBox deathBox = new ();
             deathBox.startPoint = new(lastPoint.x - 2 , tempPlatform.endPoint.y-1);
             deathBox.endPoint = new(tempPlatform.startPoint.x + 2, tempPlatform.endPoint.y-2);
 
-            var tempDeathbox = Instantiate(deathBoxPreFab, deathBox.origin, Quaternion.identity);
+            var tempDeathbox = Instantiate(deathBoxPreFab, ouder, false);
+            tempDeathbox.localPosition = deathBox.origin;
             deathBox.length = deathBox.endPoint.x- deathBox.startPoint.x;
             tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
@@ -188,7 +191,8 @@ public class Level : MonoBehaviour
         DeathBox lastdeathBox = new();
         lastdeathBox.startPoint = new(lastPoint.x - 2, lastPoint.y -3) ;
         lastdeathBox.endPoint = new(lastPoint.x + 10,lastPoint.y - 4);
-        var tempLastDeathbox = Instantiate(deathBoxPreFab, lastdeathBox.origin, Quaternion.identity);
+        var tempLastDeathbox = Instantiate(deathBoxPreFab, ouder, false);
+        tempLastDeathbox.localPosition = lastdeathBox.origin;
         lastdeathBox.length = lastdeathBox.endPoint.x - lastdeathBox.startPoint.x;
         tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
@@ -250,7 +254,8 @@ public class Level : MonoBehaviour
                             {
                                 boxClone.heigth  *= 2;
                                 interactableObjects.Add(boxClone);
-                                Transform t = Instantiate(transform, boxClone.origin, Quaternion.identity);
+                                Transform t = Instantiate(transform,ouder,false);
+                                t.localPosition = boxClone.origin;
                                 t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
                                 t.tag = "Obstacle";
                                 t.name = "BOX" + i.ToString();
@@ -365,7 +370,8 @@ public class Level : MonoBehaviour
                         for (int j = 0; j < pikelength; j++)
                         {
 
-                            Transform t = Instantiate(transform, pikeClone.origin, Quaternion.identity);
+                            Transform t = Instantiate(transform, ouder, false);
+                            t.localPosition = pikeClone.origin;
                             t.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
                             t.tag = "Pike";
                             t.name = "PIKE" + i.ToString();
@@ -380,7 +386,7 @@ public class Level : MonoBehaviour
 
     }
 
-    private void placeMissles(Missle missleTemplate, Transform transorm)
+    private void placeMissles(Missle missleTemplate, Transform transform)
     {
         System.Random random= new ();
         foreach (Platform platform in platforms.FindAll(e => e.length > minPlatformLentghForMissle))
@@ -392,11 +398,11 @@ public class Level : MonoBehaviour
                 missleClone.heigth = missleTemplate.heigth;
                 missleClone.length = missleTemplate.length;
 
-                Transform newMissle = Instantiate(transorm, ouder, false);
+                Transform newMissle = Instantiate(transform, ouder, false);
                 newMissle.localPosition = new(missleClone.origin.x,missleClone.origin.y-1) ;
                 newMissle.tag = "Missle";
                 newMissle.GetComponent<MissleMovement>().speed = missleSpeed;
-                newMissle.GetComponent<MissleMovement>().player = Player;
+                newMissle.GetComponent<MissleMovement>().Players.AddRange(new List<GameObject> { Player, MLModel });
                 //newMissle.GetComponent<DeathScript>().Player = Player;
                 newMissle.GetComponent<DeathScript>().Spawn = Spawn;
 
