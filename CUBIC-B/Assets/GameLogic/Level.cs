@@ -265,7 +265,8 @@ public class Level : MonoBehaviour
                             // if not we just spawn
                             else{
                                 interactableObjects.Add(boxClone);
-                                Transform t = Instantiate(transform, boxClone.origin, Quaternion.identity);
+                                Transform t = Instantiate(transform, ouder, false);
+                                t.localPosition = boxClone.origin;
                                 t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
                                 t.tag = "Obstacle";
                                 t.name = "BOX" + i.ToString();
@@ -495,7 +496,8 @@ public class Level : MonoBehaviour
 
                 //will be first thing to spawn so redundant to check if it is spawned in something else
                 interactableObjects.Add(abilityObjectTemplate);
-                Transform abilityTransform = Instantiate(transform, abilityObjectTemplate.origin, Quaternion.identity);
+                Transform abilityTransform = Instantiate(transform, ouder, false);
+                abilityTransform.localPosition = abilityObjectTemplate.origin;
                 abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.heigth, 0);
 
                 abilityTransform.gameObject.GetComponent<GiveAbilityScript>().ability = ability.Ability;

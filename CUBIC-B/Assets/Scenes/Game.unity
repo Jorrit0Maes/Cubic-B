@@ -397,6 +397,7 @@ MonoBehaviour:
   missleHeigth: 0.5
   missleSpeed: 5
   deathBoxPreFab: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
+  MLModel: {fileID: 2043739073}
   Player: {fileID: 992987587}
   Spawn: {fileID: 1761946025}
   Finish: {fileID: 1986359062}
@@ -796,7 +797,7 @@ GameObject:
   - component: {fileID: 1986359062}
   - component: {fileID: 1986359061}
   - component: {fileID: 1986359060}
-  - component: {fileID: 1986359059}
+  - component: {fileID: 1986359063}
   m_Layer: 0
   m_Name: Finish
   m_TagString: Finish
@@ -804,19 +805,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1986359059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1986359058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5c65d1aa4bfb434b84acf9370270c94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Spawn: {fileID: 1761946025}
 --- !u!61 &1986359060
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -910,6 +898,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1986359063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986359058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94ff0ede3cb57f41823371a4bd84ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2043739073
 GameObject:
   m_ObjectHideFlags: 0
