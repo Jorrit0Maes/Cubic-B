@@ -43,7 +43,7 @@ public class Level : MonoBehaviour
     private int SpeedBoostAdjustments;
 
     private List<Transform> abilityTransforms= new List<Transform>();
-
+    public Transform Finish;
 
 
     public float minPlatformLentghForMissle;
@@ -69,7 +69,7 @@ public class Level : MonoBehaviour
         piketemp.length = sizeOfBox;
         piketemp.heigth = sizeOfBox;
         pikeExmp.GetComponent<DeathScript>().Spawn = Spawn;
-        pikeExmp.GetComponent<DeathScript>().Player= Player;
+        //pikeExmp.GetComponent<DeathScript>().Player= Player;
         placePikes(piketemp, pikeExmp);
         Missle missleTemp = new();
         missleTemp.length = missleLength;
@@ -169,7 +169,7 @@ public class Level : MonoBehaviour
             deathBox.length = deathBox.endPoint.x- deathBox.startPoint.x;
             tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
-            tempDeathbox.GetComponent<DeathScript>().Player = Player;
+            //tempDeathbox.GetComponent<DeathScript>().Player = Player;
             tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
            
 
@@ -192,14 +192,11 @@ public class Level : MonoBehaviour
         lastdeathBox.length = lastdeathBox.endPoint.x - lastdeathBox.startPoint.x;
         tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
-        tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
+        //tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
         tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
 
-        var tempFinish = Instantiate(squareExmp, new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f),Quaternion.identity);
-        tempFinish.gameObject.GetComponent<SpriteRenderer>().color = Color.magenta ;
-        tempFinish.AddComponent<DeathScript>();
-        tempFinish.GetComponent<DeathScript>().Player = Player;
-        tempFinish.GetComponent<DeathScript>().Spawn = Spawn;
+        Finish.localPosition = new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f);
+        
 
 
 
@@ -400,7 +397,7 @@ public class Level : MonoBehaviour
                 newMissle.tag = "Missle";
                 newMissle.GetComponent<MissleMovement>().speed = missleSpeed;
                 newMissle.GetComponent<MissleMovement>().player = Player;
-                newMissle.GetComponent<DeathScript>().Player = Player;
+                //newMissle.GetComponent<DeathScript>().Player = Player;
                 newMissle.GetComponent<DeathScript>().Spawn = Spawn;
 
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DeathScript : MonoBehaviour
 {
-    public GameObject Player;
     public GameObject Spawn;
     // Start is called before the first frame update
     void Start()
@@ -22,7 +21,7 @@ public class DeathScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Player.transform.position = Spawn.transform.position;
+            collision.gameObject.transform.position = Spawn.transform.position;
         }
     }
 }

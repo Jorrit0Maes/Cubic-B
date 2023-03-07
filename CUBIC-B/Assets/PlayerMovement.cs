@@ -22,11 +22,12 @@ public class PlayerMovement : MonoBehaviour
     public float durationAbilities;
     public float timeScaling ;
     public float increasedSpeed ;
+    public Transform AI;
     // Start is called before the first frame update
 
     private void Awake()
     {
-        animator= gameObject.GetComponent<Animator>(); 
+        animator = gameObject.GetComponent<Animator>(); 
         backUpSpeed =  Speed;
         rb = GetComponent<Rigidbody2D>();
         DoubleJumpIsActive = false;
@@ -38,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
-
+        Physics2D.IgnoreCollision(gameObject.GetComponent<BoxCollider2D>(), AI.GetComponent<BoxCollider2D>());
     }
 
     // Update is called once per frame
@@ -58,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
             Flip();
         }
 
-        animator.SetBool("InMotion", (Mathf.Abs(Move) > 0));
+        animator.SetBool("inMotion", (Mathf.Abs(Move) > 0));
         jumpFunction();
 
         animator.SetFloat("verticalSpeed", rb.velocity.y);
@@ -72,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle"))
+        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y ==0)
         {
             IsOnFloor  = true;
             animator.SetBool("onGround", IsOnFloor);
@@ -85,8 +86,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     protected void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle"))
+    {   // check of we can de grond of een obstakel weg gaan indien we weg gaan van een obstakel moeten we een verticale snelheid hebben anders kan dit ook zijn als men tegen een obstakel loopt als men nog op de grond is
+        if (other.gameObject.CompareTag("Ground") || (other.gameObject.CompareTag("Obstacle") && rb.velocity.y != 0))
         {
             IsOnFloor = false;
             animator.SetBool("onGround", IsOnFloor);
