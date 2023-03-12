@@ -388,19 +388,25 @@ MonoBehaviour:
   roundExmp: {fileID: 5252337178548027911, guid: deeb524f77ae1d048ac1f52087640b7f, type: 3}
   pikeExmp: {fileID: 9115080843937230790, guid: 0ccf796214dedc84e91bd07370ffd9e8, type: 3}
   missleExmp: {fileID: 7970882597293075098, guid: eeebc3bb49975884eb21335358c7222c, type: 3}
+  wallJumpExmp: {fileID: 6446870114781508197, guid: ce4025ec905d2054ab1a9979a005e615, type: 3}
+  rightWallExmp: {fileID: 5225563018864622405, guid: 0bbad0280c5eba04082e871bda021cae, type: 3}
+  leftWallExmp: {fileID: 5484256110879900075, guid: e0e3a79246e53fd4291b7d6b3ea90943, type: 3}
   sizeOfBox: 0.5
   maxNumberOfPikes: 3
   sizeOfAbilityObject: 1
   aantalAbilities: 2
   respawnTimer: 2.5
   missleLength: 1
-  missleHeigth: 0.5
+  missleHeight: 0.5
   missleSpeed: 5
   deathBoxPreFab: {fileID: 274004979011651273, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
   MLModel: {fileID: 2043739073}
   Player: {fileID: 992987587}
   Spawn: {fileID: 1761946025}
   Finish: {fileID: 1986359062}
+  kansOpJumps: 30
+  wallJumpMinHeight: 7
+  wallJumpMaxHeight: 15
   minPlatformLentghForMissle: 7
   chanceOfMissleSpawning: 80
   ouder: {fileID: 259555543}
@@ -578,6 +584,8 @@ MonoBehaviour:
   timeScaling: 0.6
   increasedSpeed: 15
   AI: {fileID: 2043739076}
+  physicsMaterial: {fileID: 0}
+  lastWall: none
 --- !u!1 &1357214062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,7 +1098,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: e926f6ae6ac0fa24e8fa6198e3cf5e31, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: ccc22cdc05d05e340942867206ced7fb, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: CubicB_Behavior

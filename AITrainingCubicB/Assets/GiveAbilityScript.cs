@@ -29,19 +29,8 @@ public class GiveAbilityScript : MonoBehaviour
             gameObject.SetActive(false);
 
 
-            System.Timers.Timer timer = new();
-            timer.Interval = 7000;
-            timer.Elapsed += resetAbility;
-            timer.AutoReset = false;
-            timer.Start();
 
         }
     }
 
-    public void resetAbility(object source, ElapsedEventArgs e)
-    {
-        gameObject.SetActive(true);
-
-
-    }
 }

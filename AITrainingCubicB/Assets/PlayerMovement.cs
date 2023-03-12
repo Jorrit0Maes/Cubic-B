@@ -27,6 +27,7 @@ public class PlayerMovement : Agent
     public float increasedSpeed ;
     public float activeAbility;
     public bool reset = false;
+    public bool Died = false;
     // Start is called before the first frame update
 
     public Transform Target;
@@ -82,6 +83,7 @@ public class PlayerMovement : Agent
         this.rb.velocity = Vector3.zero;
         this.transform.localPosition = new Vector3(0, 2.55f, 0);
         reset = false;
+        Died =false;
         shortestDistanceToEnd= 0;
         activeAbility= 0;
         episodeCounter++;
@@ -145,7 +147,11 @@ public class PlayerMovement : Agent
             EndEpisode();
             
         }
-
+        if (Died)
+        {
+            AddReward(-10f);
+            Died = false;
+        }
         if (reset)
         {
             AddReward(-100f);
@@ -192,6 +198,10 @@ public class PlayerMovement : Agent
             }
             jumpcount = 1;
            
+        }
+        else if (other.gameObject.CompareTag("DeathBox"))
+        {
+            Died= true;
         }
         
     }

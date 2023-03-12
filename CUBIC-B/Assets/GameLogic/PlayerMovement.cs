@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System.Timers;
-using UnityEngine.WSA;
-using System.Threading;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     public bool IsOnFloor { get; set; }
     public Animator animator { get; set; }
     private bool FacingRight { get; set; }
-    private bool IsJumping { get; set; }
     public bool DoubleJumpIsActive;
     public int jumpcount { get; set; }
     private float backUpSpeed { get; set; }
@@ -23,7 +19,13 @@ public class PlayerMovement : MonoBehaviour
     public float timeScaling ;
     public float increasedSpeed ;
     public Transform AI;
-    // Start is called before the first frame update
+
+    //WallJump
+    private bool onRightWall = false;
+    private bool onLeftWall = false;
+    private bool sliding = false;
+    public PhysicsMaterial2D physicsMaterial;
+    public string lastWall = "none";
 
     private void Awake()
     {
@@ -31,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
         backUpSpeed =  Speed;
         rb = GetComponent<Rigidbody2D>();
         DoubleJumpIsActive = false;
-        IsJumping = false;
         FacingRight = true;
         IsOnFloor = true;
         jumpcount = 1;
@@ -77,12 +78,68 @@ public class PlayerMovement : MonoBehaviour
         {
             IsOnFloor  = true;
             animator.SetBool("onGround", IsOnFloor);
-            if (IsJumping)
-            {
-                IsJumping = false;
-            }
             jumpcount = 1;
+            lastWall = "ground";
+            rb.sharedMaterial = null;
         }
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onRightWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "right"));
+            //als men van de grond of linkse muur komt glijden we niet naar beneden
+            if (lastWall != "right")
+            {
+                rb.sharedMaterial = null;
+
+            }//als we van de rechtse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onLeftWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "left"));
+            //als men van de grond of rechtse muur komt glijden we niet naar beneden
+            if (lastWall != "left")
+            {
+                rb.sharedMaterial = null;
+            }//als we van de linkse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
+    }
+    private IEnumerator startSliding(Rigidbody2D teLatenGlijden, float delay, string name)
+    {
+        yield return new WaitForSeconds(delay);
+        if (name == "right")
+        {
+            if (onRightWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
+        else if (name == "left")
+        {
+            if (onLeftWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
+
     }
 
     protected void OnCollisionExit2D(Collision2D other)
@@ -92,6 +149,18 @@ public class PlayerMovement : MonoBehaviour
             IsOnFloor = false;
             animator.SetBool("onGround", IsOnFloor);
         }
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            onRightWall = false;
+            sliding = false;
+            lastWall = "right";
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            onLeftWall = false;
+            sliding = false;
+            lastWall = "left";
+        }
 
     }
 
@@ -99,30 +168,56 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!DoubleJumpIsActive)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && IsOnFloor)
+            if (Input.GetKeyDown(KeyCode.UpArrow) )
             {
-                rb.AddForce(new Vector2(rb.velocity.x, Jump));
-                IsJumping = true;
+                if (IsOnFloor)
+                {
+                    rb.AddForce(new Vector2(rb.velocity.x, Jump));
+                }
+                else if (onRightWall && !sliding && lastWall != "right")
+                {
+                    rb.sharedMaterial = physicsMaterial;
+                    animator.SetBool("isJumping", true);
+                    rb.AddForce(new Vector2(-700, 500));
 
+                }
+                else if (onLeftWall && !sliding && lastWall != "left")
+                {
+                    rb.sharedMaterial = physicsMaterial;
+                    animator.SetBool("isJumping", true);
+                    rb.AddForce(new Vector2(700, 500));
+                }
             }
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && (!IsJumping || jumpcount == 2))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
 
-                if (!IsJumping)
+                if (IsOnFloor)
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
+                    jumpcount++;
                 }
-                else
+                else if (onRightWall && !sliding && lastWall != "right")
+                {
+                    rb.sharedMaterial = physicsMaterial;
+                    animator.SetBool("isJumping", true);
+                    rb.AddForce(new Vector2(-700, 500));
+                    jumpcount++;
+                }
+                else if (onLeftWall && !sliding && lastWall != "left")
+                {
+                    rb.sharedMaterial = physicsMaterial;
+                    animator.SetBool("isJumping", true);
+                    rb.AddForce(new Vector2(700, 500));
+                    jumpcount++;
+                }
+                else if (jumpcount == 2)
                 {
                     rb.AddRelativeForce(new Vector2(rb.velocity.x, Jump + (rb.velocity.y)));
-
+                    jumpcount++;
                 }
-                IsJumping = true;
-                Debug.Log("jump pressed");
-                jumpcount++;
 
             }
         }

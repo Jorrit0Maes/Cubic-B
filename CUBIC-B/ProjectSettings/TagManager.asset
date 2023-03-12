@@ -14,6 +14,8 @@ TagManager:
   - WallJump
   - Missle
   - Machine
+  - LeftWall
+  - RightWall
   layers:
   - Default
   - TransparentFX

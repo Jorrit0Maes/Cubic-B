@@ -404,7 +404,7 @@ public class Level : MonoBehaviour
                 newMissle.localPosition = new(missleClone.origin.x, missleClone.origin.y - 1);
                 newMissle.tag = "Missle";
                 newMissle.GetComponent<MissleMovement>().speed = missleSpeed;
-                newMissle.GetComponent<MissleMovement>().player = Player;
+                newMissle.GetComponent<MissleMovement>().Players = new List<GameObject> { Player};
                 newMissle.GetComponent<DeathScript>().Player = Player;
                 newMissle.GetComponent<DeathScript>().Spawn = Spawn;
 
