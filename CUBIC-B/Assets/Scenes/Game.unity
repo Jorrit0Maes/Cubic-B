@@ -586,6 +586,8 @@ MonoBehaviour:
   AI: {fileID: 2043739076}
   physicsMaterial: {fileID: 0}
   lastWall: none
+  dead: 0
+  spawn: {fileID: 1761946025}
 --- !u!1 &1357214062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1147,7 @@ MonoBehaviour:
   increasedSpeed: 12
   activeAbility: 0
   reset: 0
+  spawn: {fileID: 1761946026}
   Target: {fileID: 1986359062}
   episodeCounter: 0
   curentReward: 0

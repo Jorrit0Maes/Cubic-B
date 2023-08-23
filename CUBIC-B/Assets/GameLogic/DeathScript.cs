@@ -5,10 +5,11 @@ using UnityEngine;
 public class DeathScript : MonoBehaviour
 {
     public GameObject Spawn;
+    private AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -19,9 +20,14 @@ public class DeathScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Machine"))
+        GameObject player = collision.gameObject;
+        if (player.CompareTag("Player") || player.CompareTag("Machine"))
         {
-            collision.gameObject.transform.position = Spawn.transform.position;
+            if (player.CompareTag("Player"))
+            {
+                audioSource.Play();
+            }
+            player.GetComponent<Animator>().SetBool("Die", true);
         }
     }
 }

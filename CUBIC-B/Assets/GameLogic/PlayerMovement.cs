@@ -27,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
     public PhysicsMaterial2D physicsMaterial;
     public string lastWall = "none";
 
+    //Death animation
+    private AudioSource audioSource;
+    public bool dead;
+    public GameObject spawn;
+
     private void Awake()
     {
         animator = gameObject.GetComponent<Animator>(); 
@@ -41,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         Physics2D.IgnoreCollision(gameObject.GetComponent<BoxCollider2D>(), AI.GetComponent<BoxCollider2D>());
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -49,6 +55,11 @@ public class PlayerMovement : MonoBehaviour
         Move = Input.GetAxis("Horizontal") * Speed;
 
         rb.velocity = new Vector2(Move, rb.velocity.y);
+        
+        if (!animator.GetBool("Die") && rb.bodyType == RigidbodyType2D.Static)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
 
         if (Move < 0 && FacingRight)
         {
@@ -76,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y == 0)
         {
-            IsOnFloor  = true;
+            IsOnFloor = true;
             animator.SetBool("onGround", IsOnFloor);
             jumpcount = 1;
             lastWall = "ground";
@@ -288,4 +299,25 @@ public class PlayerMovement : MonoBehaviour
         DoubleJumpIsActive = false;
     }
 
+    private void playAudio()
+    {
+        audioSource.Play();
+    }
+
+    private void freeze()
+    {
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    private void unFreeze()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    private void respawn()
+    {
+        animator.SetBool("Die", false);
+        gameObject.transform.position = spawn.transform.position;
+        unFreeze();
+    }
 }

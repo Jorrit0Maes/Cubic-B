@@ -3,6 +3,7 @@ using System.Timers;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using System;
 
 public class MLMovement : Agent
 {
@@ -22,8 +23,8 @@ public class MLMovement : Agent
     public float activeAbility;
     public bool reset = false;
     public Animator animator { get; set; }
+    public Transform spawn;
 
-    // Start is called before the first frame update
 
     public Transform Target;
     float shortestDistanceToEnd = 0;
@@ -62,6 +63,9 @@ public class MLMovement : Agent
     
     void Update()
     {
+        if(!animator.GetBool("Die") && rb.bodyType == RigidbodyType2D.Static){
+            rb.bodyType = RigidbodyType2D.Dynamic;  
+        }
         if (rb.velocity.x < 0 && FacingRight)
         {
 
@@ -253,4 +257,20 @@ public class MLMovement : Agent
     }
 
 
+    private void freeze()
+    {
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    private void unFreeze()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    private void respawn()
+    {
+        animator.SetBool("Die", false);
+        gameObject.transform.position = spawn.position;
+        unFreeze();
+    }
 }
