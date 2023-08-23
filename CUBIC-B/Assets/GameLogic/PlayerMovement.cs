@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     public float timeScaling ;
     public float increasedSpeed ;
     public Transform AI;
+    private AudioSource jumpAudio;
 
     //WallJump
     private bool onRightWall = false;
@@ -28,7 +29,6 @@ public class PlayerMovement : MonoBehaviour
     public string lastWall = "none";
 
     //Death animation
-    private AudioSource audioSource;
     public bool dead;
     public GameObject spawn;
 
@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         Physics2D.IgnoreCollision(gameObject.GetComponent<BoxCollider2D>(), AI.GetComponent<BoxCollider2D>());
-        audioSource = GetComponent<AudioSource>();
+        jumpAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -184,12 +184,15 @@ public class PlayerMovement : MonoBehaviour
                 if (IsOnFloor)
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
+                    jumpAudio.Play();
                 }
                 else if (onRightWall && !sliding && lastWall != "right")
                 {
                     rb.sharedMaterial = physicsMaterial;
                     animator.SetBool("isJumping", true);
                     rb.AddForce(new Vector2(-700, 500));
+                    jumpAudio.Play();
+
 
                 }
                 else if (onLeftWall && !sliding && lastWall != "left")
@@ -197,6 +200,8 @@ public class PlayerMovement : MonoBehaviour
                     rb.sharedMaterial = physicsMaterial;
                     animator.SetBool("isJumping", true);
                     rb.AddForce(new Vector2(700, 500));
+                    jumpAudio.Play();
+
                 }
             }
         }
@@ -209,6 +214,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
                     jumpcount++;
+                    jumpAudio.PlayOneShot(jumpAudio.clip);
                 }
                 else if (onRightWall && !sliding && lastWall != "right")
                 {
@@ -216,6 +222,7 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("isJumping", true);
                     rb.AddForce(new Vector2(-700, 500));
                     jumpcount++;
+                    jumpAudio.PlayOneShot(jumpAudio.clip);
                 }
                 else if (onLeftWall && !sliding && lastWall != "left")
                 {
@@ -223,11 +230,14 @@ public class PlayerMovement : MonoBehaviour
                     animator.SetBool("isJumping", true);
                     rb.AddForce(new Vector2(700, 500));
                     jumpcount++;
+                    jumpAudio.PlayOneShot(jumpAudio.clip);
                 }
                 else if (jumpcount == 2)
                 {
                     rb.AddRelativeForce(new Vector2(rb.velocity.x, Jump + (rb.velocity.y)));
                     jumpcount++;
+                    jumpAudio.PlayOneShot(jumpAudio.clip);
+
                 }
 
             }
@@ -297,11 +307,6 @@ public class PlayerMovement : MonoBehaviour
         Speed = backUpSpeed;
         resetTimescale();
         DoubleJumpIsActive = false;
-    }
-
-    private void playAudio()
-    {
-        audioSource.Play();
     }
 
     private void freeze()
