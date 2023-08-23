@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DeathScript : MonoBehaviour
 {
-    public GameObject Spawn;
     private AudioSource audioSource;
     // Start is called before the first frame update
     void Start()

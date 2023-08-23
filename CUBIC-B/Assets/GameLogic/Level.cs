@@ -84,7 +84,7 @@ public class Level : MonoBehaviour
         Pike piketemp = new();
         piketemp.length = sizeOfBox;
         piketemp.height = sizeOfBox;
-        pikeExmp.GetComponent<DeathScript>().Spawn = Spawn;
+        //pikeExmp.GetComponent<DeathScript>().Spawn = Spawn;
         //pikeExmp.GetComponent<DeathScript>().Player= Player;
         placePikes(piketemp, pikeExmp);
         Missle missleTemp = new();
@@ -187,7 +187,7 @@ public class Level : MonoBehaviour
             tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
             //tempDeathbox.GetComponent<DeathScript>().Player = Player;
-            tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
+            //tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
            
 
             platforms.Add(tempPlatform);
@@ -213,7 +213,7 @@ public class Level : MonoBehaviour
         tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
         //tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
-        tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
+        //tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
         deathBoxesTransforms.Add(tempLastDeathbox);
 
         Finish.localPosition = new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f);
@@ -485,7 +485,7 @@ public class Level : MonoBehaviour
                 newMissle.GetComponent<MissleMovement>().speed = missleSpeed;
                 newMissle.GetComponent<MissleMovement>().Players.AddRange(new List<GameObject> { Player, MLModel });
                 //newMissle.GetComponent<DeathScript>().Player = Player;
-                newMissle.GetComponent<DeathScript>().Spawn = Spawn;
+                //newMissle.GetComponent<DeathScript>().Spawn = Spawn;
 
 
             }

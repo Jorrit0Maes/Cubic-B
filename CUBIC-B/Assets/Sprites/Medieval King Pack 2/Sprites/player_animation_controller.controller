@@ -298,19 +298,19 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1563031814353718646}
-    m_Position: {x: 240, y: -80, z: 0}
+    m_Position: {x: -50, y: -350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3799354050095403637}
-    m_Position: {x: 370, y: 110, z: 0}
+    m_Position: {x: 410, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6028751120419808726}
-    m_Position: {x: 460, y: 10, z: 0}
+    m_Position: {x: 840, y: -50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -738950894940621244}
-    m_Position: {x: 750, y: 0, z: 0}
+    m_Position: {x: 970, y: -480, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1809970463025599061}
-    m_Position: {x: 210, y: -240, z: 0}
+    m_Position: {x: 370, y: -110, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -364,25 +364,25 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: inMotion
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: onGround
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Die
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
