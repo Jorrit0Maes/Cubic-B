@@ -11,13 +11,24 @@ public class SpeedBoost : Ability
 
 	public void Activate(GameObject Player)
 	{
-		PlayerObject = Player;
-		//get and increase movement speed of the player
-		PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
-		playerMovement.Invoke("triggerIncreasedSpeed", 0);
+		if (Player.CompareTag("Player"))
+		{
+            PlayerObject = Player;
+            //get and increase movement speed of the player
+            PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
+            playerMovement?.Invoke("triggerIncreasedSpeed", 0);
+        }
+        else if (Player.CompareTag("Machine"))
+        {
+            PlayerObject = Player;
+            //get and increase movement speed of the player
+            PlayerObject.TryGetComponent(out MLMovement mlMovement);
+            mlMovement?.Invoke("triggerIncreasedSpeed", 0);
+        }
 
-        
-	}
+
+
+    }
 
 
 	public void Task(object source ,ElapsedEventArgs e)

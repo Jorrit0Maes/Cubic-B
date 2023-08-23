@@ -10,9 +10,19 @@ public class DoubleJump : Ability
 
     public void Activate(GameObject Player)
     {
-        Player.TryGetComponent(out PlayerMovement playerMovement);
-        playerMovement.Invoke("triggerDoubleJump", 0);
-        
+
+        if (Player.CompareTag("Player"))
+        {
+            PlayerObject = Player;
+            PlayerObject.TryGetComponent(out PlayerMovement playerMovement);
+            playerMovement?.Invoke("triggerDoubleJump", 0);
+        }
+        else if (Player.CompareTag("Machine"))
+        {
+            PlayerObject = Player;
+            PlayerObject.TryGetComponent(out MLMovement mlMovement);
+            mlMovement?.Invoke("triggerDoubleJump", 0);
+        }
 
     }
 
