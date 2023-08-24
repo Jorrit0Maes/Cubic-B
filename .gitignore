@@ -58,3 +58,10 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+CUBIC-B_BurstDebugInformation_DoNotShip/
+CUBIC-B_Data/
+MonoBleedingEdge/
+*.exe
+*.dll
+

@@ -811,7 +811,7 @@ PrefabInstance:
     - target: {fileID: 2977110544645448774, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8300000, guid: 52d2140d830e1384a9d4db3a39b6835a, type: 3}
     - target: {fileID: 3079309289950075033, guid: 127670b1dc9f4e1489471beed60f14bf, type: 3}
       propertyPath: m_Name
       value: DeathBox
