@@ -230,7 +230,7 @@ public class Level : MonoBehaviour
         foreach(Platform platform in platforms) {
             WallJump templateWallJump = new();
 
-            if (random.Next(100) <= kansOpJumps && platforms.Count > platforms.IndexOf(platform) && platform.length >= templateWallJump.length + 2)
+            if (random.Next(100) <= kansOpJumps && platforms.Count > platforms.IndexOf(platform) && platform.length >= templateWallJump.length + 2 && spawnedAbilities.Find(e => e.startPoint.x > platform.startPoint.x && e.startPoint.x < platform.endPoint.x) == null)
             {
                 templateWallJump.startPoint = new(platform.endPoint.x - 5, platform.startPoint.y + 1);
                 templateWallJump.height = random.Next(wallJumpMinHeight, wallJumpMaxHeight + 1);
