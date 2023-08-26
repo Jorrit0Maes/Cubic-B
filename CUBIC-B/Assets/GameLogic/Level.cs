@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -207,6 +208,7 @@ public class Level : MonoBehaviour
         DeathBox lastdeathBox = new();
         lastdeathBox.startPoint = new(lastPoint.x - 2, lastPoint.y -3) ;
         lastdeathBox.length = 6;
+        deathBoxes.Add(lastdeathBox);
 
         Transform tempLastDeathbox = Instantiate(deathBoxPreFab, ouder, false);
         tempLastDeathbox.localPosition = lastdeathBox.origin;
@@ -279,7 +281,8 @@ public class Level : MonoBehaviour
                 // verplaats de deathbox naar zijn nieuwe oorsprong met het nieuwe startpunt
                 firstDBAfterWallTrans.localPosition = firstDBAfterWall.origin;
 
-
+                var lastDeathBox = deathBoxesTransforms.Last();
+                lastDeathBox.localPosition = new(lastDeathBox.localPosition.x, lastDeathBox.localPosition.y + templateWallJump.height + rightHelp.height);
                 Finish.localPosition = new(Finish.localPosition.x, Finish.localPosition.y + templateWallJump.height + rightHelp.height);
                 //mini walls
             }
