@@ -6,7 +6,7 @@ using UnityEngine;
 public class AbilityObject : InteractableObject
 {
     public Ability Ability { get; set; }
-    public override Vector2 endPoint { get => new(startPoint.x + length, startPoint.y + heigth); set => endPoint = value; }
+    public override Vector2 endPoint { get => new(startPoint.x + length, startPoint.y + height); set => endPoint = value; }
     public override Vector2 origin { get => new(startPoint.x + (endPoint.x - startPoint.x) / 2, endPoint.y + (startPoint.y - endPoint.y) / 2); set => throw new System.NotImplementedException(); }
 
     public AbilityObject()

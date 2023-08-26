@@ -9,5 +9,5 @@ public abstract  class InteractableObject
     abstract public Vector2 endPoint { get; set; }
     abstract public Vector2 origin { get; set; }
     public float length { get; set; }
-    public float heigth { get; set; }
+    public float height { get; set; }
 }

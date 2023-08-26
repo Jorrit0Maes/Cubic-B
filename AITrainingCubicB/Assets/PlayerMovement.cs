@@ -167,7 +167,7 @@ public class PlayerMovement : Agent
         else if (shortestDistanceToEnd > distanceToTarget)
         {
             shortestDistanceToEnd = distanceToTarget;
-            AddReward(5f);
+            AddReward(50f);
         }
         else
         {

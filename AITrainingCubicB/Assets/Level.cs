@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,6 +10,13 @@ public class Level : MonoBehaviour
 
     // Levelgeneration
     private ArrayList Platforms = new();
+
+    private List<Platform> platforms;
+    private List<Transform> platformsTransforms;
+    private List<Transform> deathBoxesTransforms;
+    private List<DeathBox> deathBoxes;
+
+
     //limits for level generation
     public int maxLevelLength;
     public int minSizeLastPlatform;
@@ -22,7 +30,9 @@ public class Level : MonoBehaviour
     public Transform roundExmp;
     public Transform pikeExmp;
     public Transform missleExmp;
-    private List<Platform> platforms;
+    public Transform wallJumpExmp;
+    public Transform rightWallExmp;
+    public Transform leftWallExmp;
     private ArrayList interactableObjects ;
     public float sizeOfBox;
     public int maxNumberOfPikes;
@@ -42,6 +52,10 @@ public class Level : MonoBehaviour
 
     private int SpeedBoostAdjustments;
 
+    public int kansOpJumps;
+    public int wallJumpMinHeight;
+    public int wallJumpMaxHeight;
+
 
     public float minPlatformLentghForMissle;
     public int chanceOfMissleSpawning;
@@ -50,30 +64,36 @@ public class Level : MonoBehaviour
     public Transform Finish;
     private void spawns()
     {
-        interactableObjects = new ArrayList();
-        spawnedAbilities = new List<AbilityObject>();
-        spawnedDoubleJumps = new List<AbilityObject>();
+
+        platforms = new();
+        platformsTransforms = new();
+        deathBoxesTransforms = new();
+        deathBoxes = new();
+        interactableObjects = new();
+        spawnedAbilities = new ();
+        spawnedDoubleJumps = new();
         listOfAbilities = new List<string> { "speed", "double" };
         SpeedBoostAdjustments = 0;
         DetermineAbilityXCoordinates();
         generateLevelPlatforms();
+        placeWallJumps(wallJumpExmp, rightWallExmp, leftWallExmp, squareExmp);
         AbilityObject abilityObject = new AbilityObject();
         abilityObject.length = sizeOfAbilityObject;
-        abilityObject.heigth = sizeOfAbilityObject;
+        abilityObject.height = sizeOfAbilityObject;
         placeAbilities(abilityObject, roundExmp);
         Box boxtemp = new();
-        boxtemp.heigth = sizeOfBox;
+        boxtemp.height = sizeOfBox;
         boxtemp.length = sizeOfBox;
         placeObjects(boxtemp, squareExmp);
         Pike piketemp = new();
         piketemp.length = sizeOfBox;
-        piketemp.heigth = sizeOfBox;
+        piketemp.height = sizeOfBox;
         pikeExmp.GetComponent<DeathScript>().Spawn = Spawn;
         pikeExmp.GetComponent<DeathScript>().Player = Player;
         placePikes(piketemp, pikeExmp);
         Missle missleTemp = new();
         missleTemp.length = missleLength;
-        missleTemp.heigth = missleHeigth;
+        missleTemp.height = missleHeigth;
         placeMissles(missleTemp, missleExmp);
         abilityTransforms.RemoveAll(e => e is Transform);
 
@@ -82,7 +102,6 @@ public class Level : MonoBehaviour
 
 
     }
-
 
     private void Update()
     {
@@ -146,7 +165,7 @@ public class Level : MonoBehaviour
             }
 
 
-            Platform tempPlatform = new Platform(new Vector2(lastPoint.x + xSpacing, lastPoint.y + ySpacing), new Vector2(lastPoint.x + xSpacing + (length), lastPoint.y + ySpacing - 1));
+            Platform tempPlatform = new Platform(new Vector2(lastPoint.x + xSpacing, lastPoint.y + ySpacing));
             tempPlatform.length = length;
 
 
@@ -156,7 +175,7 @@ public class Level : MonoBehaviour
             tempInitiated.localScale = new Vector3(length, 1, 1);
             DeathBox deathBox = new();
             deathBox.startPoint = new(lastPoint.x - 2, tempPlatform.endPoint.y - 1);
-            deathBox.endPoint = new(tempPlatform.startPoint.x + 2, tempPlatform.endPoint.y - 2);
+            deathBox.length = tempPlatform.startPoint.x - lastPoint.x + 4;
 
             var tempDeathbox = Instantiate(deathBoxPreFab,ouder, false);
             tempDeathbox.localPosition = deathBox.origin;
@@ -169,6 +188,9 @@ public class Level : MonoBehaviour
 
 
             platforms.Add(tempPlatform);
+            platformsTransforms.Add(tempInitiated);
+            deathBoxesTransforms.Add(tempDeathbox);
+            deathBoxes.Add(deathBox);
 
 
             lengthleft -= length;
@@ -182,7 +204,9 @@ public class Level : MonoBehaviour
 
         DeathBox lastdeathBox = new();
         lastdeathBox.startPoint = new(lastPoint.x - 2, lastPoint.y - 3);
-        lastdeathBox.endPoint = new(lastPoint.x + 10, lastPoint.y - 4);
+        lastdeathBox.length = 6;
+        deathBoxes.Add(lastdeathBox);
+
         var tempLastDeathbox = Instantiate(deathBoxPreFab, ouder, false);
         tempLastDeathbox.localPosition = lastdeathBox.origin;
         tempLastDeathbox.localRotation = Quaternion.identity;
@@ -191,6 +215,7 @@ public class Level : MonoBehaviour
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
         tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
         tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
+        deathBoxesTransforms.Add(tempLastDeathbox);
 
         Finish.localPosition = new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f);
         Finish.localRotation = Quaternion.identity;
@@ -202,6 +227,74 @@ public class Level : MonoBehaviour
 
 
 
+    }
+
+    private void placeWallJumps(Transform wallJump, Transform rightWall, Transform leftWall, Transform helpPlatformTrans)
+    {
+        System.Random random = new();
+        foreach (Platform platform in platforms)
+        {
+            WallJump templateWallJump = new();
+
+            if (random.Next(100) <= kansOpJumps && platforms.Count > platforms.IndexOf(platform) && platform.length >= templateWallJump.length + 2 && spawnedAbilities.Find(e => e.startPoint.x > platform.startPoint.x && e.startPoint.x < platform.endPoint.x) == null)
+            {
+                templateWallJump.startPoint = new(platform.endPoint.x - 5, platform.startPoint.y + 1);
+                templateWallJump.height = random.Next(wallJumpMinHeight, wallJumpMaxHeight + 1);
+
+                Transform initWallJump = Instantiate(wallJump, ouder, false);
+                initWallJump.localPosition = templateWallJump.origin;
+                initWallJump.localScale = new(1, templateWallJump.height);
+                initWallJump.name = "WallJump";
+                initWallJump.localRotation = Quaternion.identity;
+
+                MiniWall rightHelp = new();
+                rightHelp.startPoint = new(templateWallJump.endPoint.x - rightHelp.length, templateWallJump.startPoint.y - 1);
+
+                Transform initRightHelp = Instantiate(rightWall, ouder, false);
+                initRightHelp.localPosition = rightHelp.origin;
+                initRightHelp.localRotation = Quaternion.identity;
+
+                MiniWall leftHelp = new();
+                leftHelp.startPoint = new(templateWallJump.startPoint.x, templateWallJump.endPoint.y);
+
+                Transform initLeftHelp = Instantiate(leftWall, ouder, false);
+                initLeftHelp.localPosition = leftHelp.origin;
+                initLeftHelp.localRotation = Quaternion.identity;
+
+                Platform helpPlatform = new(templateWallJump.endPoint);
+                helpPlatform.length = 0.5f;
+                helpPlatform.height = 1f;
+                Transform initHelpPlatform = Instantiate(helpPlatformTrans, ouder, false);
+                initHelpPlatform.localPosition = helpPlatform.origin;
+                initHelpPlatform.localScale = new(helpPlatform.length, helpPlatform.height);
+                initHelpPlatform.localRotation = Quaternion.identity;
+                initHelpPlatform.GetComponent<SpriteRenderer>().color = initRightHelp.GetComponent<SpriteRenderer>().color;
+                initHelpPlatform.tag = "Ground";
+
+                interactableObjects.Add(templateWallJump);
+
+                for (int i = platforms.IndexOf(platform) + 1; i < platforms.Count; i++)
+                {
+                    platforms[i].startPoint = new(platforms[i].startPoint.x, platforms[i].startPoint.y + templateWallJump.height + rightHelp.height);
+                    platformsTransforms[i].localPosition = new(platformsTransforms[i].localPosition.x, platformsTransforms[i].localPosition.y + templateWallJump.height + rightHelp.height);
+                    deathBoxesTransforms[i].localPosition = new(deathBoxesTransforms[i].localPosition.x, deathBoxesTransforms[i].localPosition.y + templateWallJump.height + rightHelp.height);
+                }
+                //eerst volgende deathbox opschuiven om deze niet in de muur te hebben
+                Transform firstDBAfterWallTrans = deathBoxesTransforms[platforms.IndexOf(platform) + 1];
+
+                //voer nieuw startpunt in maar laat lengte het zelfde maakt niet echt uit
+                DeathBox firstDBAfterWall = deathBoxes[platforms.IndexOf(platform) + 1];
+                firstDBAfterWall.startPoint = new(templateWallJump.endPoint.x, templateWallJump.endPoint.y - 1);
+
+                // verplaats de deathbox naar zijn nieuwe oorsprong met het nieuwe startpunt
+                firstDBAfterWallTrans.localPosition = firstDBAfterWall.origin;
+
+                var lastDeathBox = deathBoxesTransforms.Last();
+                lastDeathBox.localPosition = new(lastDeathBox.localPosition.x, lastDeathBox.localPosition.y + templateWallJump.height + rightHelp.height);
+                Finish.localPosition = new(Finish.localPosition.x, Finish.localPosition.y + templateWallJump.height + rightHelp.height);
+                //mini walls
+            }
+        }
     }
 
     private void placeObjects(InteractableObject objectToSpawnTemplate, Transform transform)
@@ -232,7 +325,7 @@ public class Level : MonoBehaviour
                 {
                     Box boxClone = new Box();
                     boxClone.length = objectToSpawnTemplate.length;
-                    boxClone.heigth = objectToSpawnTemplate.heigth;
+                    boxClone.height = objectToSpawnTemplate.height;
 
                     //to not put it on the front edge so we can make the jump or off the platform we adjust the limits
                     //generating floating point between bounds
@@ -249,7 +342,7 @@ public class Level : MonoBehaviour
                             //if it comes after the actual doubleJump on the platform we double the height we need to do change the objects height to determine the right origin but just doubling it will double it everytime and keep it doubles because it is a refernce so we set it back after we are done
                             if (boxClone.startPoint.x > ab.startPoint.x + 1 && boxClone.startPoint.x < 10 + ab.startPoint.x)
                             {
-                                boxClone.heigth *= 2;
+                                boxClone.height *= 2;
                                 interactableObjects.Add(boxClone);
                                 Transform t = Instantiate(transform, ouder, false);
                                 t.localPosition = boxClone.origin;
@@ -257,8 +350,8 @@ public class Level : MonoBehaviour
                                 t.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
                                 t.tag = "Obstacle";
                                 t.name = "BOX" + i.ToString();
-                                t.localScale = new Vector3(boxClone.length, boxClone.heigth, 0);
-                                boxClone.heigth /= 2;
+                                t.localScale = new Vector3(boxClone.length, boxClone.height, 0);
+                                boxClone.height /= 2;
                             }
                             // if not we just spawn
                             else
@@ -271,7 +364,7 @@ public class Level : MonoBehaviour
                                 t.tag = "Obstacle";
                                 t.name = "BOX" + i.ToString();
 
-                                t.localScale = new Vector3(boxClone.length, boxClone.heigth, 0);
+                                t.localScale = new Vector3(boxClone.length, boxClone.height, 0);
                             }
 
                         }
@@ -282,7 +375,7 @@ public class Level : MonoBehaviour
                              //comes after the upgrade and before it's start + 10
                              if (objectToSpawn.startPoint.x > ABObj.startPoint.x + 1 && objectToSpawn.startPoint.x < ABObj.startPoint.x + 10)
                              {
-                                 t.localScale = new Vector3(objectToSpawn.length, objectToSpawn.heigth*2, 0);
+                                 t.localScale = new Vector3(objectToSpawn.length, objectToSpawn.height*2, 0);
                              }
                          }*/
 
@@ -322,7 +415,7 @@ public class Level : MonoBehaviour
                 {
                     Pike pikeClone = new Pike();
                     pikeClone.length = pikeTemplate.length;
-                    pikeClone.heigth = pikeTemplate.heigth;
+                    pikeClone.height = pikeTemplate.height;
                     //to not put it on the front edge so we can jump on or off the platform we adjust the limits
                     //generating floating point between bounds
                     double upperBound = platform.endPoint.x - 1;
@@ -336,7 +429,7 @@ public class Level : MonoBehaviour
                     // als er pikes kunnen worden gezet maar gewoon niet zoveel als de random heeft geselecteerd gaan we voor het max aantal dat wel gaat
                     Pike tempPike = new Pike();
                     tempPike.startPoint = pikeClone.startPoint;
-                    tempPike.heigth = pikeClone.heigth;
+                    tempPike.height = pikeClone.height;
                     tempPike.length = pikelength * pikeClone.length;
                     int k = 0;
 
@@ -377,7 +470,7 @@ public class Level : MonoBehaviour
                             t.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
                             t.tag = "Pike";
                             t.name = "PIKE" + i.ToString();
-                            t.localScale = new Vector3(pikeClone.length, pikeClone.heigth, 0);
+                            t.localScale = new Vector3(pikeClone.length, pikeClone.height, 0);
                             pikeClone.startPoint = new(pikeClone.endPoint.x, pikeClone.startPoint.y);
                         }
 
@@ -397,7 +490,7 @@ public class Level : MonoBehaviour
             {
                 Missle missleClone = new();
                 missleClone.startPoint = new(platform.endPoint.x, platform.startPoint.y + 1);
-                missleClone.heigth = missleTemplate.heigth;
+                missleClone.height = missleTemplate.height;
                 missleClone.length = missleTemplate.length;
 
                 Transform newMissle = Instantiate(transorm, ouder, false);
@@ -500,7 +593,7 @@ public class Level : MonoBehaviour
                 Transform abilityTransform = Instantiate(transform, ouder, false);
                 abilityTransform.localPosition = abilityObjectTemplate.origin;
                 abilityTransform.rotation = Quaternion.identity;
-                abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.heigth, 0);
+                abilityTransform.localScale = new Vector3(abilityObjectTemplate.length, abilityObjectTemplate.height, 0);
 
                 abilityTransform.gameObject.GetComponent<GiveAbilityScript>().ability = ability.Ability;
                 abilityTransforms.Add(abilityTransform);
