@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float Speed;
-    public float Jump;
+    private bool FacingRight { get; set; }
     private float Move { get; set; }
     protected Rigidbody2D rb { get; set; }
-    public bool IsOnFloor { get; set; }
+
+    public float Speed;
+    public float Jump;
+    public bool IsOnFloor;
     public Animator animator { get; set; }
-    private bool FacingRight { get; set; }
     public bool DoubleJumpIsActive;
-    public int jumpcount { get; set; }
+    public int jumpcount;
     private float backUpSpeed { get; set; }
     private bool doResetTime = false;
     public float durationAbilities;
@@ -155,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected void OnCollisionExit2D(Collision2D other)
     {   // check of we can de grond of een obstakel weg gaan indien we weg gaan van een obstakel moeten we een verticale snelheid hebben anders kan dit ook zijn als men tegen een obstakel loopt als men nog op de grond is
-        if (other.gameObject.CompareTag("Ground") || (other.gameObject.CompareTag("Obstacle") && rb.velocity.y != 0))
+        if (other.gameObject.CompareTag("Ground") || (other.gameObject.CompareTag("Obstacle") && rb.velocity.y > 0))
         {
             IsOnFloor = false;
             animator.SetBool("onGround", IsOnFloor);
@@ -181,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) )
             {
-                if (IsOnFloor)
+                if (IsOnFloor && rb.velocity.y == 0)
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
                     jumpAudio.Play();
@@ -210,7 +211,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
 
-                if (IsOnFloor)
+                if (IsOnFloor && rb.velocity.y == 0)
                 {
                     rb.AddForce(new Vector2(rb.velocity.x, Jump));
                     jumpcount++;
