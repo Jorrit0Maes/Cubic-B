@@ -92,11 +92,6 @@ public class Level : MonoBehaviour
         missleTemp.length = missleLength;
         missleTemp.height = missleHeight;
         placeMissles(missleTemp, missleExmp);
-
-
-
-
-
     }
 
 
@@ -143,12 +138,10 @@ public class Level : MonoBehaviour
         while ( lengthleft > minSizeLastPlatform )
         {
 
-            float length = random.Next(minPlatformSize,maxPlatformSize);
-
-            
+            float length = random.Next(minPlatformSize,maxPlatformSize);  
 
 
-            //rand doet allleen ints dus we delen door 100 om een getal tot 2 na de komme te krijgen dunno Y ma werkt niet als ik dat in de toewijzing doe beste gok is Int reasons
+            //rand doet alleen ints dus we delen door 100 om een getal tot 2 na de komme te krijgen dunno Y ma werkt niet als ik dat in de toewijzing doe beste gok is Int reasons
             float xSpacing = random.Next(minPlatformXspacing,maxPlatformXSpacing);
             float ySpacing = random.Next(minPlatformYSpacing, maxPlatformYSpacing);
 
@@ -187,9 +180,7 @@ public class Level : MonoBehaviour
             tempDeathbox.localPosition = deathBox.origin;
             tempDeathbox.tag = "DeathBox";
             tempDeathbox.localScale = new(deathBox.length,1,1);
-            //tempDeathbox.GetComponent<DeathScript>().Player = Player;
-            //tempDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
-           
+          
 
             platforms.Add(tempPlatform);
             platformsTransforms.Add(tempInitiated);
@@ -214,8 +205,6 @@ public class Level : MonoBehaviour
         tempLastDeathbox.localPosition = lastdeathBox.origin;
         tempLastDeathbox.tag = "DeathBox";
         tempLastDeathbox.localScale = new(lastdeathBox.length, 1, 1);
-        //tempLastDeathbox.GetComponent<DeathScript>().Player = Player;
-        //tempLastDeathbox.GetComponent<DeathScript>().Spawn = Spawn;
         deathBoxesTransforms.Add(tempLastDeathbox);
 
         Finish.localPosition = new Vector3(lastPoint.x + 1.5f, lastPoint.y + 0.5f);
@@ -232,7 +221,7 @@ public class Level : MonoBehaviour
         foreach(Platform platform in platforms) {
             WallJump templateWallJump = new();
 
-            if (random.Next(100) <= kansOpJumps && platforms.Count > platforms.IndexOf(platform) && platform.length >= templateWallJump.length + 2 && spawnedAbilities.Find(e => e.startPoint.x > platform.startPoint.x && e.startPoint.x < platform.endPoint.x) == null)
+            if (random.Next(100) <= kansOpJumps && platforms.Count - 1 > platforms.IndexOf(platform) && platform.length >= templateWallJump.length + 2 && spawnedAbilities.Find(e => e.startPoint.x > platform.startPoint.x && e.startPoint.x < platform.endPoint.x) == null)
             {
                 templateWallJump.startPoint = new(platform.endPoint.x - 5, platform.startPoint.y + 1);
                 templateWallJump.height = random.Next(wallJumpMinHeight, wallJumpMaxHeight + 1);
@@ -243,7 +232,7 @@ public class Level : MonoBehaviour
                 initWallJump.name = "WallJump";
 
                 MiniWall rightHelp = new();
-                rightHelp.startPoint = new(templateWallJump.endPoint.x - rightHelp.length, templateWallJump.startPoint.y -1);
+                rightHelp.startPoint = new(templateWallJump.endPoint.x - rightHelp.length, templateWallJump.startPoint.y - 1);
 
                 Transform initRightHelp = Instantiate(rightWall, ouder, false);
                 initRightHelp.localPosition= rightHelp.origin;
