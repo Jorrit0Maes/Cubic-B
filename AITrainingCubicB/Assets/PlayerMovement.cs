@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Timers;
 using UnityEngine.WSA;
-using System.Threading;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
@@ -37,8 +36,14 @@ public class PlayerMovement : Agent
     public float lastEpisodeReward = 0;
     public Transform level;
     public Transform SpawnSquare;
-    System.Timers.Timer timer;
+    private Timer timer = new ();
     public float velocity;
+
+    private bool onRightWall = false;
+    private bool onLeftWall = false;
+    private bool sliding = false;
+    public PhysicsMaterial2D physicsMaterial;
+    public string lastWall = "none";
 
 
     void Start()
@@ -126,7 +131,7 @@ public class PlayerMovement : Agent
 
         rb.velocity = new(xmove * Speed, rb.velocity.y);
 
-        if ((IsOnFloor || (DoubleJumpIsActive && jumpcount == 2)) && jumpmove == 1)
+        if ((IsOnFloor && rb.velocity.y == 0 || (DoubleJumpIsActive && jumpcount == 2)) && jumpmove == 1)
         {
             rb.AddForce(new(rb.velocity.x, Jump));
             IsOnFloor= false;
@@ -189,7 +194,7 @@ public class PlayerMovement : Agent
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y == 0)
+        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y > 0)
         {
             IsOnFloor  = true;
             if (IsJumping)
@@ -203,17 +208,85 @@ public class PlayerMovement : Agent
         {
             Died= true;
         }
-        
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onRightWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "right"));
+            //als men van de grond of linkse muur komt glijden we niet naar beneden
+            if (lastWall != "right")
+            {
+                rb.sharedMaterial = null;
+
+            }//als we van de rechtse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onLeftWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "left"));
+            //als men van de grond of rechtse muur komt glijden we niet naar beneden
+            if (lastWall != "left")
+            {
+                rb.sharedMaterial = null;
+            }//als we van de linkse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
+
     }
 
     protected void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle") )
         {
             IsOnFloor = false;
         }
-       
-                
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            onRightWall = false;
+            sliding = false;
+            lastWall = "right";
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            onLeftWall = false;
+            sliding = false;
+            lastWall = "left";
+        }
+    }
+
+    private IEnumerator startSliding(Rigidbody2D teLatenGlijden, float delay, string name)
+    {
+        yield return new WaitForSeconds(delay);
+        if (name == "right")
+        {
+            if (onRightWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
+        else if (name == "left")
+        {
+            if (onLeftWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
 
     }
 
