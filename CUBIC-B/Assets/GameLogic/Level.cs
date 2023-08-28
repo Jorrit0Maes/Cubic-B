@@ -507,7 +507,7 @@ public class Level : MonoBehaviour
         //zolang we niet het maximum aantal abilities overschrijden
         for (int i = 0; i < aantalAbilities; i++)
         {
-            int AbilityXCoordinate = random.Next(i*sectionlength  ,(i+1)*sectionlength);
+            int AbilityXCoordinate = random.Next(i*sectionlength, (i+1)*sectionlength);
             //als die te kort staat op de huidige zetten we hem wat verder
             if (AbilityXCoordinate-lastSpawnedPoint<= sectionlength/4)
             {
@@ -555,8 +555,17 @@ public class Level : MonoBehaviour
     {
         foreach (AbilityObject ability in spawnedAbilities)
         {
-            Platform platNaAbility = platforms.Find(x => x.startPoint.x > ability.startPoint.x);
-            Platform plat = platforms[platforms.IndexOf(platNaAbility) - 1];
+            Platform platNaAbility = platforms.Find(x => x.startPoint.x > ability.startPoint.x) ?? platforms.Last();
+            int platNaAbilityIndex = platforms.IndexOf(platNaAbility);
+            Platform plat;
+            if (platNaAbilityIndex <= 0)
+            {
+                plat = platforms[0];
+            }
+            else
+            {
+                plat = platforms[platNaAbilityIndex - 1];
+            }
             if (plat != null)
             {
                 abilityObjectTemplate.startPoint = new Vector2(ability.startPoint.x, plat.startPoint.y +1);
