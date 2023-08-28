@@ -4,6 +4,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using System;
+using System.Collections;
 
 public class MLMovement : Agent
 {
@@ -35,6 +36,12 @@ public class MLMovement : Agent
     public Transform SpawnSquare;
     System.Timers.Timer timer;
     public float velocity;
+
+    private bool onRightWall = false;
+    private bool onLeftWall = false;
+    private bool sliding = false;
+    public PhysicsMaterial2D physicsMaterial;
+    public string lastWall = "none";
 
 
     void Start()
@@ -125,12 +132,27 @@ public class MLMovement : Agent
 
         rb.velocity = new(xmove * Speed, rb.velocity.y);
 
-        if ((IsOnFloor || (DoubleJumpIsActive && jumpcount == 2)) && jumpmove == 1)
+        if (jumpmove == 1)
         {
-            rb.AddForce(new(rb.velocity.x, Jump));
-            IsOnFloor = false;
-            IsJumping = true;
-            jumpcount++;
+            if ((IsOnFloor && rb.velocity.y == 0 || (DoubleJumpIsActive && jumpcount == 2)))
+            {
+                rb.AddForce(new(rb.velocity.x, Jump));
+                IsOnFloor = false;
+                IsJumping = true;
+                jumpcount++;
+            }
+            else if (onRightWall && !sliding && lastWall != "right")
+            {
+                rb.sharedMaterial = physicsMaterial;
+                rb.AddForce(new Vector2(-700, 500));
+                jumpcount++;
+            }
+            else if (onLeftWall && !sliding && lastWall != "left")
+            {
+                rb.sharedMaterial = physicsMaterial;
+                rb.AddForce(new Vector2(700, 500));
+                jumpcount++;
+            }
         }
 
 
@@ -196,6 +218,43 @@ public class MLMovement : Agent
             jumpcount = 1;
 
         }
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onRightWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "right"));
+            //als men van de grond of linkse muur komt glijden we niet naar beneden
+            if (lastWall != "right")
+            {
+                rb.sharedMaterial = null;
+
+            }//als we van de rechtse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            jumpcount = 1;
+            //breek al lopende coroutines af
+            StopAllCoroutines();
+            onLeftWall = true;
+            //start nieuwe coroutine om de tijd van de player op deze muur te beperken
+            StartCoroutine(startSliding(rb, 3, "left"));
+            //als men van de grond of rechtse muur komt glijden we niet naar beneden
+            if (lastWall != "left")
+            {
+                rb.sharedMaterial = null;
+            }//als we van de linkse muur zelf komen glijden we naar beneden
+            else
+            {
+                rb.sharedMaterial = physicsMaterial;
+            }
+        }
 
     }
 
@@ -207,12 +266,41 @@ public class MLMovement : Agent
             animator.SetBool("onGround", IsOnFloor);
 
         }
-
-
-
+        else if (other.gameObject.CompareTag("RightWall"))
+        {
+            onRightWall = false;
+            sliding = false;
+            lastWall = "right";
+        }
+        else if (other.gameObject.CompareTag("LeftWall"))
+        {
+            onLeftWall = false;
+            sliding = false;
+            lastWall = "left";
+        }
     }
 
-  
+    private IEnumerator startSliding(Rigidbody2D teLatenGlijden, float delay, string name)
+    {
+        yield return new WaitForSeconds(delay);
+        if (name == "right")
+        {
+            if (onRightWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
+        else if (name == "left")
+        {
+            if (onLeftWall)
+            {
+                teLatenGlijden.sharedMaterial = physicsMaterial;
+                sliding = true;
+            }
+        }
+
+    }
 
     public void triggerIncreasedSpeed()
     {

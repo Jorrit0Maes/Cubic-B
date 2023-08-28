@@ -14,7 +14,7 @@ public class PlayerMovement : Agent
     public float Jump;
     private float Move { get; set; }
     protected Rigidbody2D rb { get; set; }
-    public bool IsOnFloor { get; set; }
+    public bool IsOnFloor;
     private bool FacingRight { get; set; }
     private bool IsJumping { get; set; }
     public bool DoubleJumpIsActive;
@@ -53,7 +53,7 @@ public class PlayerMovement : Agent
         DoubleJumpIsActive = false;
         IsJumping = false;
         FacingRight = true;
-        IsOnFloor = false;
+        IsOnFloor = true;
         jumpcount = 1;
         activeAbility = 0;
 
@@ -131,12 +131,27 @@ public class PlayerMovement : Agent
 
         rb.velocity = new(xmove * Speed, rb.velocity.y);
 
-        if ((IsOnFloor && rb.velocity.y == 0 || (DoubleJumpIsActive && jumpcount == 2)) && jumpmove == 1)
+        if (jumpmove == 1)
         {
-            rb.AddForce(new(rb.velocity.x, Jump));
-            IsOnFloor= false;
-            IsJumping = true;
-            jumpcount++;
+            if ((IsOnFloor && rb.velocity.y == 0 || (DoubleJumpIsActive && jumpcount == 2)))
+            {
+                rb.AddForce(new(rb.velocity.x, Jump));
+                IsOnFloor = false;
+                IsJumping = true;
+                jumpcount++;
+            }
+            else if (onRightWall && !sliding && lastWall != "right")
+            {
+                rb.sharedMaterial = physicsMaterial;
+                rb.AddForce(new Vector2(-700, 500));
+                jumpcount++;
+            }
+            else if (onLeftWall && !sliding && lastWall != "left")
+            {
+                rb.sharedMaterial = physicsMaterial;
+                rb.AddForce(new Vector2(700, 500));
+                jumpcount++;
+            }
         }
 
         
@@ -194,7 +209,7 @@ public class PlayerMovement : Agent
 
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y > 0)
+        if ((other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle")) && rb.velocity.y == 0)
         {
             IsOnFloor  = true;
             if (IsJumping)
@@ -250,7 +265,7 @@ public class PlayerMovement : Agent
 
     protected void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle") )
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Obstacle") && rb.velocity.y > 0)
         {
             IsOnFloor = false;
         }

@@ -580,12 +580,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 5
   Jump: 200
+  IsOnFloor: 0
   DoubleJumpIsActive: 0
+  jumpcount: 0
   durationAbilities: 5000
   timeScaling: 0.6
   increasedSpeed: 15
   AI: {fileID: 2043739076}
-  physicsMaterial: {fileID: 0}
+  physicsMaterial: {fileID: 6200000, guid: 7db3ec801fbc41a40939625547354655, type: 2}
   lastWall: none
   dead: 0
   spawn: {fileID: 1761946025}
